@@ -9,7 +9,6 @@ function Player (shape) {
   this.vx    = 0;   // x component of velocity, pixels/sec
   this.vy    = 0;   // y component of velocity, pixels/sec
   this.angle = 0;   // angle in degrees
-  this.angv  = 0;   // angular velocity, degrees/sec
 
   this.graphics = new GraphicsElement(shape);
 
