@@ -1,27 +1,28 @@
 function Player (shape) {
-  this.TURN_FACTOR  = 10;   // degrees
-  this.ACCEL_FACTOR = 5;
+  this.ACCEL_FACTOR = 3;
   this.STATIC_FRIC  = 1;
-  this.DYNAMIC_FRIC = 0.95;
+  this.DYNAMIC_FRIC = 0.92;
+
+  this.TURN_FACTOR      = 10;   // degrees
+  this.ANG_ACCEL_FACTOR = 4;    // degrees / sec^2
+  this.ANG_DYNAMIC_FRIC = 0.92;
+  this.ANG_STATIC_FRIC  = 2;
 
   this.x     = 0;   // x position
   this.y     = 0;   // y position
   this.vx    = 0;   // x component of velocity, pixels/sec
   this.vy    = 0;   // y component of velocity, pixels/sec
   this.angle = 0;   // angle in degrees
+  this.vang  = 0;   // angular velocity, degrees/sec
 
   this.graphics = new GraphicsElement(shape);
 
   this.turnCounterClockwise = function() {
-    this.angle = (this.angle + this.TURN_FACTOR) % 360;
-    this.graphics.rotate(this.angle);
-    Game.debug('ANGLE: ' + this.angle);
+    this._angAccelerate(this.ANG_ACCEL_FACTOR);
   }
 
   this.turnClockwise = function() {
-    this.angle = (360 + this.angle - this.TURN_FACTOR) % 360;
-    this.graphics.rotate(this.angle);
-    Game.debug('ANGLE: ' + this.angle);
+    this._angAccelerate(-1 * this.ANG_ACCEL_FACTOR);
   }
 
   this.accelerate = function() {
@@ -37,9 +38,12 @@ function Player (shape) {
   }
 
   this.tickPosition = function() {
+    this._applyAngFriction();
+    this._applyAngVelocity();
     this._applyFriction();
     this._applyVelocity();
     this.graphics.setPosition(this.x, this.y);
+    this.graphics.rotate(this.angle);
   }
 
   //private
@@ -47,6 +51,25 @@ function Player (shape) {
   this._accelerate = function(factor) {
     this.vx += Math.cos(this.angle * Math.PI / 180) * factor;
     this.vy -= Math.sin(this.angle * Math.PI / 180) * factor;
+  }
+
+  this._angAccelerate = function(factor) {
+    this.vang += factor;
+  }
+
+  // reduces angular velocity
+  this._applyAngFriction = function() {
+    if(Math.abs(this.vang) > this.ANG_STATIC_FRIC) {
+      this.vang *= this.ANG_DYNAMIC_FRIC;
+    } else {
+      this.vang = 0;
+    }
+  }
+
+  // updates angle based on angular velocity
+  this._applyAngVelocity = function() {
+    var sign = (this.vang >= 0 ? 1 : -1);
+    this.angle = (360 + this.angle + (Math.abs(this.vang) % 360) * sign) % 360
   }
 
   // reduces velocity
