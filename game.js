@@ -3,7 +3,7 @@ var Game = {
     height: 600,
     width: 800
   },
-  debugMode: true,
+  debugMode: false,
   movableElements: [],
   player1: null,
   player2: null,
