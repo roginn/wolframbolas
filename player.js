@@ -3,20 +3,25 @@ function Player (x, y, radius, angle) {
   this.STATIC_FRIC  = 1;
   this.DYNAMIC_FRIC = 0.92;
 
-  this.ANG_ACCEL_FACTOR = 2;    // degrees / tick^2
-  this.ANG_DYNAMIC_FRIC = 0.92;
-  this.ANG_STATIC_FRIC  = 1.5;
+  // simple turning mode
+  this.CONST_TURN_FACTOR = 10;   // degrees
+
+  // angular acceleration mode
+  this.ANG_ACCEL_FACTOR  = 2;    // degrees / tick^2
+  this.ANG_DYNAMIC_FRIC  = 0.92;
+  this.ANG_STATIC_FRIC   = 1.5;
 
   this.x     = x;     // x position
   this.y     = y;     // y position
-  this.vx    = 0;     // x component of velocity, pixels/sec
-  this.vy    = 0;     // y component of velocity, pixels/sec
+  this.vx    = 0;     // x component of velocity, pixels/tick
+  this.vy    = 0;     // y component of velocity, pixels/tick
   this.angle = angle; // angle in degrees
-  this.vang  = 0;     // angular velocity, degrees/sec
+  this.vang  = 0;     // angular velocity, degrees/tick
 
   this.radius = radius;
   this.mass   = radius;
 
+  this.useAngularAccel = false;
   this.graphics = Graphics.buildPlayerAvatar(this);
 
   this.accelerate = function() {
@@ -41,11 +46,19 @@ function Player (x, y, radius, angle) {
   }
 
   this.turnClockwise = function() {
-    this._angAccelerate(-1 * this.ANG_ACCEL_FACTOR);
+    if(this.useAngularAccel) {
+      this._angAccelerate(-1 * this.ANG_ACCEL_FACTOR);
+    } else {
+      this.angle = (this.angle + this.CONST_TURN_FACTOR) % 360;
+    }
   }
 
   this.turnCounterClockwise = function() {
-    this._angAccelerate(this.ANG_ACCEL_FACTOR);
+    if(this.useAngularAccel) {
+      this._angAccelerate(this.ANG_ACCEL_FACTOR);
+    } else {
+      this.angle = (360 + this.angle - this.CONST_TURN_FACTOR) % 360;
+    }
   }
 
   //
@@ -72,6 +85,8 @@ function Player (x, y, radius, angle) {
 
   // updates angle based on angular velocity
   this._applyAngVelocity = function() {
+    if(!this.useAngularAccel) return;
+
     var sign = (this.vang >= 0 ? 1 : -1);
     this.angle = (360 + this.angle + (Math.abs(this.vang) % 360) * sign) % 360
   }
