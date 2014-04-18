@@ -8,8 +8,15 @@ var Graphics = {
     x = player.x,
     y = player.y;
 
-    circle.graphics.beginFill("red").drawCircle(0, 0, r);
-    triangle.graphics.beginFill("green").drawPolyStar(0, 0, r, 3, 0, 0);
+    circle.graphics.beginFill("#e52949").drawCircle(0, 0, r);
+
+    triangle.graphics.beginFill("#0d717b");
+    triangle.graphics.moveTo(0, -1/2 * r);
+    triangle.graphics.lineTo(r, 0);
+    triangle.graphics.lineTo(0, 1/2 * r);
+    triangle.graphics.lineTo(0, -1/2 * r);
+    triangle.width = r;
+    triangle.height = r;
 
     container.addChild(circle);
     container.addChild(triangle);
