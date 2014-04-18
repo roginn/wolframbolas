@@ -2,12 +2,12 @@ function tickControls() {
   if (keySetA.leftHeld)     { Game.player1.turnCounterClockwise(); }
   if (keySetA.rightHeld)    { Game.player1.turnClockwise(); }
   if (keySetA.forwardHeld)  { Game.player1.accelerate(); }
-  if (keySetA.backwardHeld) { Game.player1.decelerate(); }
+  // if (keySetA.backwardHeld) { Game.player1.decelerate(); }
 
   if (keySetB.leftHeld)     { Game.player2.turnCounterClockwise(); }
   if (keySetB.rightHeld)    { Game.player2.turnClockwise(); }
   if (keySetB.forwardHeld)  { Game.player2.accelerate(); }
-  if (keySetB.backwardHeld) { Game.player2.decelerate(); }
+  // if (keySetB.backwardHeld) { Game.player2.decelerate(); }
 }
 
 function tickPositions() {
@@ -99,7 +99,7 @@ function handleTick() {
 
 
   // debug text
-  var debugText = "angle: " + Game.player1.angle;
+  var debugText = "angle: " + Game.player1.angle.toFixed(2);
   debugText += "\n\nang: " + Game.player1.vang;
   debugText += "\n\nspeed: " + Game.player1.getSpeed().toFixed(2);
   debugText += "\n\nvel. x: " + Game.player1.vx.toFixed(2);
