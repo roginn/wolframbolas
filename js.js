@@ -29,6 +29,7 @@ function handleTick() {
 
   // debug text
   var debugText = "angle: " + Game.player1.angle;
+  debugText += "\n\nang: " + Game.player1.vang;
   debugText += "\n\nspeed: " + Game.player1.getSpeed().toFixed(2);
   debugText += "\n\nvel. x: " + Game.player1.vx.toFixed(2);
   debugText += "\n\nvel. y: " + Game.player1.vy.toFixed(2);
