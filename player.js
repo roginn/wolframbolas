@@ -1,11 +1,11 @@
 function Player (shape) {
   this.ACCEL_FACTOR = 3;
   this.STATIC_FRIC  = 1;
-  this.DYNAMIC_FRIC = 0.95;
+  this.DYNAMIC_FRIC = 0.92;
 
   this.TURN_FACTOR      = 10;   // degrees
   this.ANG_ACCEL_FACTOR = 4;    // degrees / sec^2
-  this.ANG_DYNAMIC_FRIC = 0.9;
+  this.ANG_DYNAMIC_FRIC = 0.92;
   this.ANG_STATIC_FRIC  = 2;
 
   this.x     = 0;   // x position
