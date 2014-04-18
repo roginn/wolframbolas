@@ -1,20 +1,24 @@
 // rewrite this wrapper if you want to use another framework
 var Graphics = {
-  buildPlayerAvatar: function() {
-    var circle = new createjs.Shape();
-    circle.graphics.beginFill("red").drawCircle(0, 0, 40);
+  buildPlayerAvatar: function(player) {
+    var circle = new createjs.Shape(),
+    triangle = new createjs.Shape(),
+    container = new createjs.Container(),
+    r = player.radius,
+    x = player.x,
+    y = player.y;
 
-    var triangle = new createjs.Shape();
-    triangle.graphics.beginFill("green").drawPolyStar(0, 0, 40, 3, 0, 0);
+    circle.graphics.beginFill("red").drawCircle(0, 0, r);
+    triangle.graphics.beginFill("green").drawPolyStar(0, 0, r, 3, 0, 0);
 
-    var container = new createjs.Container();
     container.addChild(circle);
     container.addChild(triangle);
-    container.cache(-40, -40, 80, 80);
-    container.x = container.y = 50;
+    container.cache(-1 * r, -1 * r, 2 * r, 2 * r);
+    container.x = x;
+    container.y = y;
 
     Graphics.stage.addChild(container);
-    return container;
+    return new GraphicsElement(container);
   },
 
   drawDebugText: function(msg) {
