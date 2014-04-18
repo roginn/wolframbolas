@@ -49,7 +49,7 @@ function Player (x, y, radius, angle) {
     if(this.useAngularAccel) {
       this._angAccelerate(-1 * this.ANG_ACCEL_FACTOR);
     } else {
-      this.angle = (this.angle + this.CONST_TURN_FACTOR) % 360;
+      this.angle = (360 + this.angle - this.CONST_TURN_FACTOR) % 360;
     }
   }
 
@@ -57,7 +57,7 @@ function Player (x, y, radius, angle) {
     if(this.useAngularAccel) {
       this._angAccelerate(this.ANG_ACCEL_FACTOR);
     } else {
-      this.angle = (360 + this.angle - this.CONST_TURN_FACTOR) % 360;
+      this.angle = (this.angle + this.CONST_TURN_FACTOR) % 360;
     }
   }
 
