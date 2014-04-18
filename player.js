@@ -1,29 +1,23 @@
-function Player (shape) {
+function Player (x, y, radius) {
   this.ACCEL_FACTOR = 3;
   this.STATIC_FRIC  = 1;
   this.DYNAMIC_FRIC = 0.92;
 
-  this.TURN_FACTOR      = 10;   // degrees
-  this.ANG_ACCEL_FACTOR = 4;    // degrees / sec^2
+  this.ANG_ACCEL_FACTOR = 2;    // degrees / sec^2
   this.ANG_DYNAMIC_FRIC = 0.92;
-  this.ANG_STATIC_FRIC  = 2;
+  this.ANG_STATIC_FRIC  = 1.5;
 
-  this.x     = 0;   // x position
-  this.y     = 0;   // y position
+  this.x     = x;   // x position
+  this.y     = y;   // y position
   this.vx    = 0;   // x component of velocity, pixels/sec
   this.vy    = 0;   // y component of velocity, pixels/sec
   this.angle = 0;   // angle in degrees
   this.vang  = 0;   // angular velocity, degrees/sec
 
-  this.graphics = new GraphicsElement(shape);
+  this.radius = radius;
+  this.mass   = radius;
 
-  this.turnCounterClockwise = function() {
-    this._angAccelerate(this.ANG_ACCEL_FACTOR);
-  }
-
-  this.turnClockwise = function() {
-    this._angAccelerate(-1 * this.ANG_ACCEL_FACTOR);
-  }
+  this.graphics = Graphics.buildPlayerAvatar(this);
 
   this.accelerate = function() {
     this._accelerate(this.ACCEL_FACTOR);
@@ -46,7 +40,17 @@ function Player (shape) {
     this.graphics.rotate(this.angle);
   }
 
+  this.turnClockwise = function() {
+    this._angAccelerate(-1 * this.ANG_ACCEL_FACTOR);
+  }
+
+  this.turnCounterClockwise = function() {
+    this._angAccelerate(this.ANG_ACCEL_FACTOR);
+  }
+
+  //
   //private
+  //
 
   this._accelerate = function(factor) {
     this.vx += Math.cos(this.angle * Math.PI / 180) * factor;

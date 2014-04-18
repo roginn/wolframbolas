@@ -23,8 +23,8 @@ var Game = {
     Graphics.init();
 
     Game.debug('Creating players');
-    Game.player1 = new Player(Graphics.buildPlayerAvatar());
-    Game.player2 = new Player(Graphics.buildPlayerAvatar());
+    Game.player1 = new Player(0, 0, 100);
+    Game.player2 = new Player(300, 300, 40);
     Game.movableElements.push(Game.player1);
     Game.movableElements.push(Game.player2);
   }
