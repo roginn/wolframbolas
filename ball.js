@@ -1,4 +1,4 @@
-function Player (x, y, radius, angle) {
+function Ball (x, y, radius, angle) {
   this.ACCEL_FACTOR = 3;
   this.STATIC_FRIC  = 1;
   this.DYNAMIC_FRIC = 0.92;
@@ -17,7 +17,7 @@ function Player (x, y, radius, angle) {
   this.radius = radius;
   this.mass   = radius;
 
-  this.graphics = Graphics.buildPlayerAvatar(this);
+  this.graphics = Graphics.buildBallAvatar(this);
 
   this.accelerate = function() {
     this._accelerate(this.ACCEL_FACTOR);
