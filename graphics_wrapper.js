@@ -1,5 +1,34 @@
 // rewrite this wrapper if you want to use another framework
 var Graphics = {
+  buildBallAvatar: function(ball) {
+    var circle = new createjs.Shape(),
+    // triangle = new createjs.Shape(),
+    container = new createjs.Container(),
+
+    r = ball.radius,
+    x = ball.x,
+    y = ball.y;
+
+    circle.graphics.beginFill("#46ac39").drawCircle(0, 0, r);
+
+    // triangle.graphics.beginFill("#0d717b");
+    // triangle.graphics.moveTo(0, -1/2 * r);
+    // triangle.graphics.lineTo(r, 0);
+    // triangle.graphics.lineTo(0, 1/2 * r);
+    // triangle.graphics.lineTo(0, -1/2 * r);
+    // triangle.width = r;
+    // triangle.height = r;
+
+    container.addChild(circle);
+    // container.addChild(triangle);
+    container.cache(-1 * r, -1 * r, 2 * r, 2 * r);
+    container.x = x;
+    container.y = y;
+
+    Graphics.stage.addChild(container);
+    return new GraphicsElement(container);
+  },
+
   buildPlayerAvatar: function(player) {
     var circle = new createjs.Shape(),
     triangle = new createjs.Shape(),
