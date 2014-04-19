@@ -5,6 +5,8 @@ var Game = {
   },
   ball: null,
   debugMode: false,
+  debugPlayer: 0,
+  debugWall: 0,
   movableElements: [],
   player1: null,
   player2: null,

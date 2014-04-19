@@ -31,7 +31,7 @@ function collideMovableStatic(m, s, normal) {
 
   return {
     vAfter: vAfter,
-    normal: normal.getScaled(vnAfter)
+    normal: normal.getScaled(Math.abs(vnAfter))
   };
 }
 
@@ -47,9 +47,6 @@ function collideMovables(a, b, normal) {
   bm  = b.mass,
   avnAfter = bvnAfter = avtAfter = bvtAfter = null, // scalars
   avAfter = bvAfter = null;                         // vectors
-
-  // Game.debug('normal: (' + normal.x + ', ' + normal.y + ')');
-  // Game.debug('tangent: (' + tangent.x + ', ' + tangent.y + ')');
 
   if(am + bm === 0) {
     Game.debug('ERROR: sum of object masses must not be zero');
@@ -131,25 +128,26 @@ function detectCollisions() {
         normal = collision.normal,
         velocity = new Vector(m1.vx, m1.vy);
 
+
         if(normal.dotProduct(velocity) < 0) {
           // set new velocity
           m1.vx = collision.vAfter.x;
           m1.vy = collision.vAfter.y;
         }
+
+        // if(i == Game.debugPlayer && j == Game.debugWall) {
+        //   var debugText = "";
+        //   debugText += "vAC: " + vAC.getMagnitude().toFixed(2);
+        //   debugText += "\n\nvBC: " + vBC.getMagnitude().toFixed(2);
+        //   debugText += "\n\nproj: " + projAC_AB.toFixed(2);
+        //   debugText += "\n\nvDist: " + vDist.getMagnitude().toFixed(2);
+        //   debugText += "\n\nvDist: (" + vDist.x.toFixed(2) + ", " + vDist.y.toFixed(2) + ")";
+        //   debugText += "\n\nnormal: (" + normal.x.toFixed(2) + ", " + normal.y.toFixed(2) + ")";
+        //   debugText += "\n\nvAB.vAC: " + vAB.dotProduct(vAC).toFixed(2);
+        //   debugText += "\n\nvAB.vBC: " + vAB.dotProduct(vBC).toFixed(2);
+        //   Graphics.drawDebugText(debugText);
+        // }
       }
-
-      // if(i == 0 && j == 4) {
-        // var debugText = "";
-        // debugText += "vAC: " + vAC.getMagnitude().toFixed(2);
-        // debugText += "\n\nvBC: " + vBC.getMagnitude().toFixed(2);
-        // debugText += "\n\nproj: " + projAC_AB.toFixed(2);
-        // debugText += "\n\nvDist: " + vDist.getMagnitude().toFixed(2);
-        // debugText += "\n\nvAB.vAC: " + vAB.dotProduct(vAC).toFixed(2);
-        // debugText += "\n\nvAB.vBC: " + vAB.dotProduct(vBC).toFixed(2);
-        // Graphics.drawDebugText(debugText);
-      // }
-
-
     }
   }
 }
@@ -157,9 +155,6 @@ function detectCollisions() {
 function handleTick() {
   // handle key presses
   tickControls();
-
-  // wrap movable elements in toroid
-  // wrapMap();
 
   detectCollisions();
 

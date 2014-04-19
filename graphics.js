@@ -69,7 +69,7 @@ var Graphics = {
 
     // if(Game.debugMode) {
       var text = new createjs.Text("", "20px Courier New", "#0000ff");
-      text.x = Graphics.stage.canvas.width - 200;
+      text.x = Graphics.stage.canvas.width - 300;
       text.y = 100;
       Graphics.debugText = text;
       Graphics.stage.addChild(text);

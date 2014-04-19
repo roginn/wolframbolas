@@ -1,6 +1,6 @@
 function Player (x, y, radius, angle) {
-  this.ACCEL_FACTOR = 1.6;
-  this.STATIC_FRIC  = 0.5;
+  this.ACCEL_FACTOR = 1;
+  this.STATIC_FRIC  = 0.4;
   this.DYNAMIC_FRIC = 0.94;
 
   // simple turning mode
@@ -21,7 +21,6 @@ function Player (x, y, radius, angle) {
   this.radius = radius;
   this.mass   = radius;
 
-  this.colliding = false;
   this.useAngularAccel = false;
   this.graphics = Graphics.buildPlayerAvatar(this);
 
@@ -94,18 +93,11 @@ function Player (x, y, radius, angle) {
 
   // reduces velocity
   this._applyFriction = function() {
-    if(Math.abs(this.vx) > this.STATIC_FRIC) {
-      // this.vx += (this.vx < 0 ? 1 : -1) * this.DYNAMIC_FRIC;
+    if(this.getSpeed() > this.STATIC_FRIC) {
       this.vx *= this.DYNAMIC_FRIC;
-    } else {
-      this.vx = 0;
-    }
-
-    if(Math.abs(this.vy) > this.STATIC_FRIC) {
-      // this.vy += (this.vy < 0 ? 1 : -1) * this.DYNAMIC_FRIC;
       this.vy *= this.DYNAMIC_FRIC;
     } else {
-      this.vy = 0;
+      this.vx = this.vy = 0;
     }
   };
 
