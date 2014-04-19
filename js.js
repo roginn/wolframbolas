@@ -2,12 +2,12 @@ function tickControls() {
   if (keySetA.leftHeld)     { Game.player1.turnCounterClockwise(); }
   if (keySetA.rightHeld)    { Game.player1.turnClockwise(); }
   if (keySetA.forwardHeld)  { Game.player1.accelerate(); }
-  if (keySetA.backwardHeld) { Game.player1.decelerate(); }
+  // if (keySetA.backwardHeld) { Game.player1.decelerate(); }
 
   if (keySetB.leftHeld)     { Game.player2.turnCounterClockwise(); }
   if (keySetB.rightHeld)    { Game.player2.turnClockwise(); }
   if (keySetB.forwardHeld)  { Game.player2.accelerate(); }
-  if (keySetB.backwardHeld) { Game.player2.decelerate(); }
+  // if (keySetB.backwardHeld) { Game.player2.decelerate(); }
 }
 
 function tickPositions() {
@@ -34,7 +34,7 @@ function elasticCollision(a, b) {
   // Game.debug('normal: (' + normal.x + ', ' + normal.y + ')');
   // Game.debug('tangent: (' + tangent.x + ', ' + tangent.y + ')');
 
-  if(am + bm == 0) {
+  if(am + bm === 0) {
     Game.debug('ERROR: sum of object masses must not be zero');
     return;
   }
@@ -99,7 +99,7 @@ function handleTick() {
 
 
   // debug text
-  var debugText = "angle: " + Game.player1.angle;
+  var debugText = "angle: " + Game.player1.angle.toFixed(2);
   debugText += "\n\nang: " + Game.player1.vang;
   debugText += "\n\nspeed: " + Game.player1.getSpeed().toFixed(2);
   debugText += "\n\nvel. x: " + Game.player1.vx.toFixed(2);
@@ -112,7 +112,9 @@ function handleTick() {
 }
 
 function wrapMap() {
-  for(i in Game.movableElements) {
+  var length = Game.movableElements.length;
+
+  for(var i = 0; i < length; ++i) {
     var e = Game.movableElements[i];
 
     if (e.x > Game.area.width) { e.x = 0; }
