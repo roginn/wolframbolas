@@ -10,6 +10,7 @@ function Ball (x, y, radius, angle) {
   this.radius = radius;
   this.mass   = radius;
 
+  this.colliding = false;
   this.graphics = Graphics.buildBallAvatar(this);
 
   this.getSpeed = function() {

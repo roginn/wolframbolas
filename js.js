@@ -29,12 +29,14 @@ function collideMovableStatic(m, s, normal) {
 
   vAfter = normal.getScaled(vnAfter).add(tangent.getScaled(vtAfter));
 
-  return vAfter;
+  return {
+    vAfter: vAfter,
+    normal: normal.getScaled(vnAfter)
+  };
 }
 
-function collideMovables(a, b) {
-  var normal = new Vector(a.x - b.x, a.y - b.y).normalize(),
-  tangent = normal.getPerpendicular(),
+function collideMovables(a, b, normal) {
+  var tangent = normal.getPerpendicular(),
   av  = new Vector(a.vx, a.vy),
   bv  = new Vector(b.vx, b.vy),
   avn = normal.dotProduct(av),  // decompose normal component
@@ -91,12 +93,21 @@ function detectCollisions() {
 
       if(centerDist.getMagnitude() <= radiusSum){
         Game.debug('collision between objects ' + i + ' and ' + j);
-        var velAfter = collideMovables(m1, m2);
+        var normal = new Vector(m1.x - m2.x, m1.y - m2.y).normalize();
+        var v1 = new Vector(m1.vx, m1.vy);
+        var v2 = new Vector(m2.vx, m2.vy);
+        var v12 = -1 * v1.dotProduct(normal);
+        var v21 = v2.dotProduct(normal);
 
-        m1.vx = velAfter.av.x;
-        m1.vy = velAfter.av.y;
-        m2.vx = velAfter.bv.x;
-        m2.vy = velAfter.bv.y;
+        if(v12 + v21 > 0) {
+          var velAfter = collideMovables(m1, m2, normal.getNormalized());
+
+          m1.vx = velAfter.av.x;
+          m1.vy = velAfter.av.y;
+          m2.vx = velAfter.bv.x;
+          m2.vy = velAfter.bv.y;
+        }
+
       }
     }
 
@@ -110,13 +121,21 @@ function detectCollisions() {
       vBC = new Vector(s.x2 - m1.x, s.y2 - m1.y),
       projAC_AB = vAC.dotProduct(vAB) / vAB.getMagnitude(),
       vProjAC_AB = vAB.getNormalized().getScaled(projAC_AB),
-      vDist = vProjAC_AB.getScaled(-1).add(vAC);
+      vDist = vProjAC_AB.getScaled(-1).add(vAC),
+      dist = vDist.getMagnitude();
 
-      if(vDist.getMagnitude() < m1.radius &&
-        vAB.dotProduct(vAC)*vAB.dotProduct(vBC) >= 0) {
-        var vAfter = collideMovableStatic(m1, s, vDist.getNormalized());
-        m1.vx = vAfter.x;
-        m1.vy = vAfter.y;
+      if(dist < m1.radius &&
+         vAB.dotProduct(vAC)*vAB.dotProduct(vBC) >= 0)
+      {
+        var collision = collideMovableStatic(m1, s, vDist.getNormalized()),
+        normal = collision.normal,
+        velocity = new Vector(m1.vx, m1.vy);
+
+        if(normal.dotProduct(velocity) < 0) {
+          // set new velocity
+          m1.vx = collision.vAfter.x * 0.8;
+          m1.vy = collision.vAfter.y * 0.8;
+        }
       }
 
       // if(i == 0 && j == 4) {
@@ -140,7 +159,7 @@ function handleTick() {
   tickControls();
 
   // wrap movable elements in toroid
-  wrapMap();
+  // wrapMap();
 
   detectCollisions();
 

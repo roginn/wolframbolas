@@ -1,15 +1,15 @@
 function Player (x, y, radius, angle) {
-  this.ACCEL_FACTOR = 3.3;
-  this.STATIC_FRIC  = 1;
+  this.ACCEL_FACTOR = 1.6;
+  this.STATIC_FRIC  = 0.5;
   this.DYNAMIC_FRIC = 0.94;
 
   // simple turning mode
-  this.CONST_TURN_FACTOR = 10;   // degrees
+  this.CONST_TURN_FACTOR = 5;   // degrees
 
   // angular acceleration mode
-  this.ANG_ACCEL_FACTOR  = 2;    // degrees / tick^2
-  this.ANG_DYNAMIC_FRIC  = 0.92;
-  this.ANG_STATIC_FRIC   = 1.5;
+  this.ANG_ACCEL_FACTOR  = 0.8;    // degrees / tick^2
+  this.ANG_DYNAMIC_FRIC  = 0.9;
+  this.ANG_STATIC_FRIC   = 0.5;
 
   this.x     = x;     // x position
   this.y     = y;     // y position
@@ -21,6 +21,7 @@ function Player (x, y, radius, angle) {
   this.radius = radius;
   this.mass   = radius;
 
+  this.colliding = false;
   this.useAngularAccel = false;
   this.graphics = Graphics.buildPlayerAvatar(this);
 
