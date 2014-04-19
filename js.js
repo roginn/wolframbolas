@@ -17,6 +17,31 @@ function tickPositions() {
   }
 }
 
+function fatalAttraction() {
+  var alpha = 10,
+  objLength = Game.movableElements.length;
+
+  for(var i = 0; i < objLength; ++i) {
+    var m1 = Game.movableElements[i];
+
+    for(var j = i + 1; j < objLength; ++j) {
+      var m2 = Game.movableElements[j],
+      vDist = new Vector(m2.x - m1.x, m2.y - m1.y),
+      force = alpha * m1.mass * m2.mass / vDist.dotProduct(vDist);
+      if(force < 0.01) continue;
+      // console.log(force);
+
+      var f1 = vDist.getNormalized().getScaled(force);
+      m2.vx += f1.x;
+      m2.vy += f1.y;
+
+      var f2 = f1.getScaled(-1);
+      // m1.vx = f2.x;
+      // m1.vy = f2.y;
+    }
+  }
+}
+
 function collideMovableStatic(m, s, normal) {
   var tangent = normal.getPerpendicular(),
   v  = new Vector(m.vx, m.vy),
@@ -155,6 +180,8 @@ function detectCollisions() {
 function handleTick() {
   // handle key presses
   tickControls();
+
+  fatalAttraction();
 
   detectCollisions();
 

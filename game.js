@@ -1,7 +1,7 @@
 var Game = {
   area: {
     height: 600,
-    width: 800
+    width: 1200
   },
   ball: null,
   debugMode: false,
@@ -13,7 +13,7 @@ var Game = {
   staticElements: [],
 
   createBall: function() {
-    var ballRadius = 30;
+    var ballRadius = 70;
 
     Game.ball = new Ball(Game.area.width/2,
                          Game.area.height/2,
@@ -24,7 +24,7 @@ var Game = {
   },
 
   createPlayers: function() {
-    var playerRadius = 60;
+    var playerRadius = 20;
 
     Game.player1 = new Player(2*playerRadius,
                               Game.area.height/2,
