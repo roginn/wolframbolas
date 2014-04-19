@@ -32,12 +32,12 @@ function fatalAttraction() {
       // console.log(force);
 
       var f1 = vDist.getNormalized().getScaled(force);
-      m2.vx += f1.x;
-      m2.vy += f1.y;
+      m1.vx += f1.x;
+      m1.vy += f1.y;
 
       var f2 = f1.getScaled(-1);
-      // m1.vx = f2.x;
-      // m1.vy = f2.y;
+      m2.vx += f2.x;
+      m2.vy += f2.y;
     }
   }
 }
