@@ -14,14 +14,14 @@ function Ball (x, y, radius, angle) {
 
   this.getSpeed = function() {
     return Math.sqrt(Math.pow(this.vx, 2) + Math.pow(this.vy, 2));
-  }
+  };
 
   this.tickPosition = function() {
     this._applyFriction();
     this._applyVelocity();
     this.graphics.setPosition(this.x, this.y);
     this.graphics.rotate(this.angle);
-  }
+  };
 
   //
   //private
@@ -42,11 +42,11 @@ function Ball (x, y, radius, angle) {
     } else {
       this.vy = 0;
     }
-  }
+  };
 
   // updates (x,y) based on velocity
   this._applyVelocity = function() {
     this.x += this.vx;
     this.y += this.vy;
-  }
+  };
 }

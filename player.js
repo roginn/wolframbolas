@@ -26,15 +26,15 @@ function Player (x, y, radius, angle) {
 
   this.accelerate = function() {
     this._accelerate(this.ACCEL_FACTOR);
-  }
+  };
 
   this.decelerate = function() {
     this._accelerate(-1 * this.ACCEL_FACTOR);
-  }
+  };
 
   this.getSpeed = function() {
     return Math.sqrt(Math.pow(this.vx, 2) + Math.pow(this.vy, 2));
-  }
+  };
 
   this.tickPosition = function() {
     this._applyAngFriction();
@@ -43,7 +43,7 @@ function Player (x, y, radius, angle) {
     this._applyVelocity();
     this.graphics.setPosition(this.x, this.y);
     this.graphics.rotate(this.angle);
-  }
+  };
 
   this.turnClockwise = function() {
     if(this.useAngularAccel) {
@@ -51,7 +51,7 @@ function Player (x, y, radius, angle) {
     } else {
       this.angle = (360 + this.angle - this.CONST_TURN_FACTOR) % 360;
     }
-  }
+  };
 
   this.turnCounterClockwise = function() {
     if(this.useAngularAccel) {
@@ -59,20 +59,20 @@ function Player (x, y, radius, angle) {
     } else {
       this.angle = (this.angle + this.CONST_TURN_FACTOR) % 360;
     }
-  }
+  };
 
   //
-  //private
+  // private
   //
 
   this._accelerate = function(factor) {
     this.vx += Math.cos(this.angle * Math.PI / 180) * factor;
     this.vy -= Math.sin(this.angle * Math.PI / 180) * factor;
-  }
+  };
 
   this._angAccelerate = function(factor) {
     this.vang += factor;
-  }
+  };
 
   // reduces angular velocity
   this._applyAngFriction = function() {
@@ -81,15 +81,15 @@ function Player (x, y, radius, angle) {
     } else {
       this.vang = 0;
     }
-  }
+  };
 
   // updates angle based on angular velocity
   this._applyAngVelocity = function() {
     if(!this.useAngularAccel) return;
 
     var sign = (this.vang >= 0 ? 1 : -1);
-    this.angle = (360 + this.angle + (Math.abs(this.vang) % 360) * sign) % 360
-  }
+    this.angle = (360 + this.angle + (Math.abs(this.vang) % 360) * sign) % 360;
+  };
 
   // reduces velocity
   this._applyFriction = function() {
@@ -106,11 +106,11 @@ function Player (x, y, radius, angle) {
     } else {
       this.vy = 0;
     }
-  }
+  };
 
   // updates (x,y) based on velocity
   this._applyVelocity = function() {
     this.x += this.vx;
     this.y += this.vy;
-  }
+  };
 }

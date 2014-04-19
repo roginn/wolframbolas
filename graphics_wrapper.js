@@ -85,22 +85,22 @@ function GraphicsElement(shape) {
 
   this.rotate = function(finalAngle) {
     this.shape.setTransform(this.shape.x,this.shape.y,1,1,360 - finalAngle);
-  }
+  };
 
   this.translate = function(x, y) {
     this.shape.x += x;
     this.shape.y += y;
-  }
+  };
 
   this.setPosition = function(x, y) {
     this.shape.x = x;
     this.shape.y = y;
-  }
+  };
 
   this.getPosition = function() {
     return {
       x: this.shape.x,
       y: this.shape.y
     };
-  }
+  };
 }

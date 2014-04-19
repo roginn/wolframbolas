@@ -34,7 +34,7 @@ function elasticCollision(a, b) {
   // Game.debug('normal: (' + normal.x + ', ' + normal.y + ')');
   // Game.debug('tangent: (' + tangent.x + ', ' + tangent.y + ')');
 
-  if(am + bm == 0) {
+  if(am + bm === 0) {
     Game.debug('ERROR: sum of object masses must not be zero');
     return;
   }
@@ -112,7 +112,9 @@ function handleTick() {
 }
 
 function wrapMap() {
-  for(i in Game.movableElements) {
+  var length = Game.movableElements.length;
+
+  for(var i = 0; i < length; ++i) {
     var e = Game.movableElements[i];
 
     if (e.x > Game.area.width) { e.x = 0; }
