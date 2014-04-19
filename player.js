@@ -1,7 +1,7 @@
 function Player (x, y, radius, angle) {
-  this.ACCEL_FACTOR = 3;
+  this.ACCEL_FACTOR = 3.3;
   this.STATIC_FRIC  = 1;
-  this.DYNAMIC_FRIC = 0.92;
+  this.DYNAMIC_FRIC = 0.94;
 
   // simple turning mode
   this.CONST_TURN_FACTOR = 10;   // degrees

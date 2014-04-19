@@ -1,6 +1,6 @@
 function Ball (x, y, radius, angle) {
   this.STATIC_FRIC  = 1;
-  this.DYNAMIC_FRIC = 0.92;
+  this.DYNAMIC_FRIC = 0.93;
 
   this.x     = x;     // x position
   this.y     = y;     // y position

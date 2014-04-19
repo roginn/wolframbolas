@@ -34,6 +34,10 @@ function Vector(x, y) {
     return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
   };
 
+  this.getNormalized = function() {
+    return this.getScaled(1.0 / this.getMagnitude());
+  };
+
   this.getPerpendicular = function() {
     return new Vector(-1 * this.y, this.x);
   };

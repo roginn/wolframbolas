@@ -48,22 +48,32 @@ var Graphics = {
     return new GraphicsElement(container);
   },
 
+  buildWall: function(wall) {
+    var line = new createjs.Shape();
+
+    line.graphics.setStrokeStyle(1);
+    line.graphics.beginStroke("white");
+    line.graphics.moveTo(wall.x1, wall.y1);
+    line.graphics.lineTo(wall.x2, wall.y2);
+
+    Graphics.stage.addChild(line);
+  },
+
   drawDebugText: function(msg) {
-    if(!Game.debugMode) return;
+    // if(!Game.debugMode) return;
     Graphics.debugText.text = msg;
   },
 
   init: function() {
-    stage = new createjs.Stage('canvas');
-    Graphics.stage = stage;
+    Graphics.stage = new createjs.Stage('canvas');;
 
-    if(Game.debugMode) {
+    // if(Game.debugMode) {
       var text = new createjs.Text("", "20px Courier New", "#0000ff");
-      text.x = stage.canvas.width - 200;
+      text.x = Graphics.stage.canvas.width - 200;
       text.y = 100;
       Graphics.debugText = text;
       Graphics.stage.addChild(text);
-    }
+    // }
   },
 
   update: function() {

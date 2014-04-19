@@ -17,7 +17,22 @@ function tickPositions() {
   }
 }
 
-function elasticCollision(a, b) {
+function collideMovableStatic(m, s, normal) {
+  var tangent = normal.getPerpendicular(),
+  v  = new Vector(m.vx, m.vy),
+  vn = normal.dotProduct(v),  // decompose normal component
+  vt = tangent.dotProduct(v), // decompose tangent component
+  vnAfter, vtAfter, vAfter;
+
+  vnAfter = -1 * vn;
+  vtAfter = vt;
+
+  vAfter = normal.getScaled(vnAfter).add(tangent.getScaled(vtAfter));
+
+  return vAfter;
+}
+
+function collideMovables(a, b) {
   var normal = new Vector(a.x - b.x, a.y - b.y).normalize(),
   tangent = normal.getPerpendicular(),
   av  = new Vector(a.vx, a.vy),
@@ -62,25 +77,60 @@ function elasticCollision(a, b) {
 }
 
 function detectCollisions() {
-  var elementCount = Game.movableElements.length;
+  var movableCount = Game.movableElements.length,
+  staticCount = Game.staticElements.length;
 
-  for(var i = 0; i < elementCount; ++i) {
-    var e1 = Game.movableElements[i];
+  for(var i = 0; i < movableCount; ++i) {
+    var m1 = Game.movableElements[i];
 
-    for(var j = i + 1; j < elementCount; ++j) {
-      var e2 = Game.movableElements[j],
-      centerDist = new Vector(e1.x - e2.x, e1.y - e2.y),
-      radiusSum = e1.radius + e2.radius;
+    // movable-movable collisions
+    for(var j = i + 1; j < movableCount; ++j) {
+      var m2 = Game.movableElements[j],
+      centerDist = new Vector(m1.x - m2.x, m1.y - m2.y),
+      radiusSum = m1.radius + m2.radius;
 
       if(centerDist.getMagnitude() <= radiusSum){
         Game.debug('collision between objects ' + i + ' and ' + j);
-        var velAfter = elasticCollision(e1, e2);
+        var velAfter = collideMovables(m1, m2);
 
-        e1.vx = velAfter.av.x;
-        e1.vy = velAfter.av.y;
-        e2.vx = velAfter.bv.x;
-        e2.vy = velAfter.bv.y;
+        m1.vx = velAfter.av.x;
+        m1.vy = velAfter.av.y;
+        m2.vx = velAfter.bv.x;
+        m2.vy = velAfter.bv.y;
       }
+    }
+
+    // movable-static collisions
+    for(var j = 0; j < staticCount; ++j) {
+      // A, B: vertices of the static element
+      // C: center of the movable element
+      var s = Game.staticElements[j],
+      vAB = new Vector(s.x2 - s.x1, s.y2 - s.y1),
+      vAC = new Vector(m1.x - s.x1, m1.y - s.y1),
+      vBC = new Vector(s.x2 - m1.x, s.y2 - m1.y),
+      projAC_AB = vAC.dotProduct(vAB) / vAB.getMagnitude(),
+      vProjAC_AB = vAB.getNormalized().getScaled(projAC_AB),
+      vDist = vProjAC_AB.getScaled(-1).add(vAC);
+
+      if(vDist.getMagnitude() < m1.radius &&
+        vAB.dotProduct(vAC)*vAB.dotProduct(vBC) >= 0) {
+        var vAfter = collideMovableStatic(m1, s, vDist.getNormalized());
+        m1.vx = vAfter.x;
+        m1.vy = vAfter.y;
+      }
+
+      // if(i == 0 && j == 4) {
+        // var debugText = "";
+        // debugText += "vAC: " + vAC.getMagnitude().toFixed(2);
+        // debugText += "\n\nvBC: " + vBC.getMagnitude().toFixed(2);
+        // debugText += "\n\nproj: " + projAC_AB.toFixed(2);
+        // debugText += "\n\nvDist: " + vDist.getMagnitude().toFixed(2);
+        // debugText += "\n\nvAB.vAC: " + vAB.dotProduct(vAC).toFixed(2);
+        // debugText += "\n\nvAB.vBC: " + vAB.dotProduct(vBC).toFixed(2);
+        // Graphics.drawDebugText(debugText);
+      // }
+
+
     }
   }
 }
@@ -99,14 +149,14 @@ function handleTick() {
 
 
   // debug text
-  var debugText = "angle: " + Game.player1.angle.toFixed(2);
-  debugText += "\n\nang: " + Game.player1.vang;
-  debugText += "\n\nspeed: " + Game.player1.getSpeed().toFixed(2);
-  debugText += "\n\nvel. x: " + Game.player1.vx.toFixed(2);
-  debugText += "\n\nvel. y: " + Game.player1.vy.toFixed(2);
-  debugText += "\n\npos. x: " + Game.player1.x.toFixed(2);
-  debugText += "\n\npos. y: " + Game.player1.y.toFixed(2);
-  Graphics.drawDebugText(debugText);
+  // var debugText = "angle: " + Game.player1.angle.toFixed(2);
+  // debugText += "\n\nang: " + Game.player1.vang;
+  // debugText += "\n\nspeed: " + Game.player1.getSpeed().toFixed(2);
+  // debugText += "\n\nvel. x: " + Game.player1.vx.toFixed(2);
+  // debugText += "\n\nvel. y: " + Game.player1.vy.toFixed(2);
+  // debugText += "\n\npos. x: " + Game.player1.x.toFixed(2);
+  // debugText += "\n\npos. y: " + Game.player1.y.toFixed(2);
+  // Graphics.drawDebugText(debugText);
 
   Graphics.update();
 }
