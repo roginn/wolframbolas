@@ -133,8 +133,8 @@ function detectCollisions() {
 
         if(normal.dotProduct(velocity) < 0) {
           // set new velocity
-          m1.vx = collision.vAfter.x * 0.8;
-          m1.vy = collision.vAfter.y * 0.8;
+          m1.vx = collision.vAfter.x;
+          m1.vy = collision.vAfter.y;
         }
       }
 
