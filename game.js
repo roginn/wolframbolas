@@ -40,15 +40,24 @@ var Game = {
   },
 
   createWalls: function() {
-    var n = new Wall(0, 0, Game.area.width, 0),
-    e = new Wall(Game.area.width, 0, Game.area.width, Game.area.height),
-    s = new Wall(Game.area.width, Game.area.height, 0, Game.area.height),
-    w = new Wall(0, Game.area.height, 0, 0);
+    var goalWidth = 100,
+    goalHeight = 300,
+    areaWidth = Game.area.width,
+    areaHeight = Game.area.height;
 
-    Game.staticElements.push(n);
-    Game.staticElements.push(e);
-    Game.staticElements.push(w);
-    Game.staticElements.push(s);
+    new Wall(goalWidth, 0, areaWidth - goalWidth, 0);
+    new Wall(areaWidth - goalWidth, 0, areaWidth - goalWidth, (areaHeight - goalHeight)/2);
+    new Wall(areaWidth - goalWidth, (areaHeight - goalHeight)/2, areaWidth, (areaHeight - goalHeight)/2);
+    new Wall(areaWidth, (areaHeight - goalHeight)/2, areaWidth, (areaHeight + goalHeight)/2);
+    new Wall(areaWidth, (areaHeight + goalHeight)/2, areaWidth - goalWidth, (areaHeight + goalHeight)/2);
+    new Wall(areaWidth - goalWidth, (areaHeight + goalHeight)/2, areaWidth - goalWidth, areaHeight);
+    new Wall(areaWidth - goalWidth, areaHeight, goalWidth, areaHeight);
+    new Wall(goalWidth, areaHeight, goalWidth, (areaHeight + goalHeight)/2);
+    new Wall(goalWidth, (areaHeight + goalHeight)/2, 0, (areaHeight + goalHeight)/2);
+    new Wall(0, (areaHeight + goalHeight)/2, 0, (areaHeight - goalHeight)/2);
+    new Wall(0, (areaHeight - goalHeight)/2, goalWidth, (areaHeight - goalHeight)/2);
+    new Wall(goalWidth, (areaHeight - goalHeight)/2, goalWidth, 0);
+
   },
 
   debug: function(msg) {

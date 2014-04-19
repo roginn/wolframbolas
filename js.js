@@ -1,13 +1,13 @@
 function tickControls() {
-  if (keySetA.leftHeld)     { Game.player1.turnCounterClockwise(); }
-  if (keySetA.rightHeld)    { Game.player1.turnClockwise(); }
-  if (keySetA.forwardHeld)  { Game.player1.accelerate(); }
-  // if (keySetA.backwardHeld) { Game.player1.decelerate(); }
+  if (keySetB.leftHeld)     { Game.player1.turnCounterClockwise(); }
+  if (keySetB.rightHeld)    { Game.player1.turnClockwise(); }
+  if (keySetB.forwardHeld)  { Game.player1.accelerate(); }
+  if (keySetB.backwardHeld) { Game.player1.decelerate(); }
 
-  if (keySetB.leftHeld)     { Game.player2.turnCounterClockwise(); }
-  if (keySetB.rightHeld)    { Game.player2.turnClockwise(); }
-  if (keySetB.forwardHeld)  { Game.player2.accelerate(); }
-  // if (keySetB.backwardHeld) { Game.player2.decelerate(); }
+  if (keySetA.leftHeld)     { Game.player2.turnCounterClockwise(); }
+  if (keySetA.rightHeld)    { Game.player2.turnClockwise(); }
+  if (keySetA.forwardHeld)  { Game.player2.accelerate(); }
+  if (keySetA.backwardHeld) { Game.player2.decelerate(); }
 }
 
 function tickPositions() {
