@@ -21,6 +21,7 @@ function Ball(config) {
   this.attractionOrder = config.attractionOrder || 0;
   this.graphics = Graphics.buildBallAvatar(this);
 
+  Game.allElements.push(this);
   Game.movableElements.push(this);
   Game.flavors[this.group] = Game.flavors[this.group] || {};
   Game.flavors[this.group]['size'] = Game.flavors[this.group]['size'] || 0;
@@ -30,6 +31,24 @@ function Ball(config) {
 
   this.getSpeed = function() {
     return Math.sqrt(Math.pow(this.vx, 2) + Math.pow(this.vy, 2));
+  };
+
+  this.getState = function() {
+    return {
+      x: this.x,
+      y: this.y,
+      vx: this.vx,
+      vy: this.vy,
+      angle: this.angle
+    };
+  };
+
+  this.loadState = function(state) {
+    this.x     = state.x;
+    this.y     = state.y;
+    this.vx    = state.vx;
+    this.vy    = state.vy;
+    this.angle = state.angle;
   };
 
   this.tickPosition = function() {

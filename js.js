@@ -20,6 +20,20 @@ function tickControls() {
   if (keySetA.backwardHeld) { Game.player2.decelerate(); }
 }
 
+function tickLocalControls() {
+  if (keySetLocal.leftHeld)     { Game.localPlayer.turnCounterClockwise(); }
+  if (keySetLocal.rightHeld)    { Game.localPlayer.turnClockwise(); }
+  if (keySetLocal.forwardHeld)  { Game.localPlayer.accelerate(); }
+  if (keySetLocal.backwardHeld) { Game.localPlayer.decelerate(); }
+}
+
+function tickRemoteControls() {
+  if (keySetRemote.leftHeld)     { Game.remotePlayer.turnCounterClockwise(); }
+  if (keySetRemote.rightHeld)    { Game.remotePlayer.turnClockwise(); }
+  if (keySetRemote.forwardHeld)  { Game.remotePlayer.accelerate(); }
+  if (keySetRemote.backwardHeld) { Game.remotePlayer.decelerate(); }
+}
+
 function tickPositions() {
   for(var i in Game.movableElements) {
     var e = Game.movableElements[i];
@@ -199,6 +213,41 @@ function detectCollisions() {
   }
 }
 
+function handleTickNetwork() {
+  if(Framework.isTickPaused()) return;
+  Framework.pauseTick();
+
+  // careful with this order!
+  Game.turn++;
+  Network.sendControls(Game.turn);
+  handleTickAfterExchange();
+}
+
+function handleTickAfterExchange() {
+  // both handleTickNetwork and Network.receiveData
+  // call this function - it should run only after
+  // the game turn has been synchronized
+  // Game.debug('Turn: ' + Game.turn + ', remoteTurn: ' + Game.remoteTurn);
+  if(Game.remoteTurn != Game.turn) {
+    return;
+  }
+
+  tickLocalControls();
+  tickRemoteControls();
+
+  if(Game.physics.enableGravity) {
+    fatalAttraction();
+  }
+
+  detectCollisions();
+
+  // handle objects movement
+  tickPositions();
+
+  Graphics.update();
+  Framework.resumeTick();
+};
+
 function handleTick() {
   // handle key presses
   tickControls();
@@ -244,4 +293,4 @@ function wrapMap() {
   }
 }
 
-Game.init();
+// Game.init();

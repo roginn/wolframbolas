@@ -1,4 +1,5 @@
 var Game = {
+  allElements: [],
   area: {
     height: 600,
     width: 1200
@@ -6,6 +7,7 @@ var Game = {
   debugMode: true,
   energy: 0,
   flavors: {},
+  localPlayer: null,
   maxRecordedSpeed: 0,
   movableElements: [],
   numObjects: 0,
@@ -21,7 +23,11 @@ var Game = {
   },
   player1: null,
   player2: null,
+  remotePlayer: null,
+  remoteTurn: 0,
   staticElements: [],
+  turn: 0,
+  useNetwork: true,
 
   cleanUp: function() {
     Game.movableElements.length = 0;
@@ -57,23 +63,23 @@ var Game = {
     // createBall(Game.player1.x - 160, Game.player1.y, 20, 1, purple);
     // createBall(Game.player1.x - 200, Game.player1.y, 20, 1, purple);
 
-    createBall(Game.player2.x + 40, Game.player2.y, 20, 2, wtf);
-    createBall(Game.player2.x + 80, Game.player2.y, 20, 2, wtf);
-    createBall(Game.player2.x + 120, Game.player2.y, 20, 2, wtf);
-    createBall(Game.player2.x + 160, Game.player2.y, 20, 2, wtf);
-    createBall(Game.player2.x + 200, Game.player2.y, 20, 2, wtf);
+    // createBall(Game.player2.x + 40, Game.player2.y, 20, 2, wtf);
+    // createBall(Game.player2.x + 80, Game.player2.y, 20, 2, wtf);
+    // createBall(Game.player2.x + 120, Game.player2.y, 20, 2, wtf);
+    // createBall(Game.player2.x + 160, Game.player2.y, 20, 2, wtf);
+    // createBall(Game.player2.x + 200, Game.player2.y, 20, 2, wtf);
   },
 
   createPlayers: function() {
     var playerRadius = 30;
 
-    // Game.player1 = new Player({
-    //   x: 300,
-    //   y: Game.area.height/2,
-    //   radius: playerRadius,
-    //   angle: 0,
-    //   group: 1
-    // });
+    Game.player1 = new Player({
+      x: 300,
+      y: Game.area.height/2,
+      radius: playerRadius,
+      angle: 0,
+      group: 1
+    });
 
     Game.player2 = new Player({
       x: Game.area.width - 300,
@@ -83,7 +89,13 @@ var Game = {
       group: 2
     });
 
-    // Game.movableElements.push(Game.player2);
+    if(Network.isHost) {
+      Game.localPlayer = Game.player1;
+      Game.remotePlayer = Game.player2;
+    } else {
+      Game.localPlayer = Game.player2;
+      Game.remotePlayer = Game.player1;
+    }
   },
 
   createWalls: function() {
@@ -130,11 +142,6 @@ var Game = {
   },
 
   init: function() {
-    Game.debug('Starting game!');
-
-    Game.debug('Initializing framework');
-    Framework.init();
-
     Game.debug('Initializing graphics');
     Graphics.init();
 
@@ -144,11 +151,34 @@ var Game = {
 
     Game.debug('Creating statics');
     Game.createWalls();
+
+    Game.debug('Controls setup');
+    Game.setupControls();
+
+    Game.debug('Initializing framework');
+    setTimeout(Framework.init, 2000);
+
+    // if(Game.useNetwork) {
+    //   Game.debug('Initializing Network');
+      // Network.init();
+    // }
+
+    Game.debug('Game started!');
   },
 
   restart: function() {
     Game.debug('Restarting game...');
     Game.cleanUp();
     Game.init();
+  },
+
+  setupControls: function() {
+    if(Game.useNetwork) {
+      document.onkeydown = handleKeyDownNetwork;
+      document.onkeyup = handleKeyUpNetwork;
+    } else {
+      document.onkeydown = handleKeyDown;
+      document.onkeyup = handleKeyUp;
+    }
   }
 };
