@@ -60,6 +60,13 @@ var Graphics = {
     Graphics.stage.addChild(line);
   },
 
+  cleanUp: function() {
+    if(typeof Graphics.stage !== "undefined") {
+      Graphics.stage.removeAllChildren();
+      Graphics.stage.clear();
+    }
+  },
+
   drawDebugText: function(msg) {
     // if(!Game.debugMode) return;
     Graphics.debugText.text = msg;
