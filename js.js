@@ -1,3 +1,13 @@
+function calculateEnergy() {
+  var objLength = Game.movableElements.length;
+  Game.energy = 0;
+
+  for(var i = 0; i < objLength; ++i) {
+    var obj = Game.movableElements[i];
+    Game.energy += Math.pow(obj.getSpeed(),2) * obj.mass;
+  }
+}
+
 function tickControls() {
   if (keySetB.leftHeld)     { Game.player1.turnCounterClockwise(); }
   if (keySetB.rightHeld)    { Game.player1.turnClockwise(); }
@@ -28,7 +38,7 @@ function fatalAttraction() {
       var m2 = Game.movableElements[j],
       vDist = new Vector(m2.x - m1.x, m2.y - m1.y),
       // force = alpha * m1.mass * m2.mass / vDist.dotProduct(vDist);
-      force = alpha * vDist.getMagnitude() / m2.mass;
+      force = alpha * (vDist.getMagnitude() - m1.radius - m2.radius) / m2.mass;
 
       if(m1.group != m2.group) continue;
       var order1 = Game.flavors[m1.group][m1.id];
@@ -202,16 +212,20 @@ function handleTick() {
   // handle objects movement
   tickPositions();
 
+  // calculateEnergy();
+
 
   // debug text
-  // var debugText = "angle: " + Game.player1.angle.toFixed(2);
+  var debugText = "Energy: " + Game.energy.toFixed(2);
+  debugText += "\n\nMax speed: " + Game.maxRecordedSpeed.toFixed(2);
+  // debugText += "\n\nangle: " + Game.player1.angle.toFixed(2);
   // debugText += "\n\nang: " + Game.player1.vang;
   // debugText += "\n\nspeed: " + Game.player1.getSpeed().toFixed(2);
   // debugText += "\n\nvel. x: " + Game.player1.vx.toFixed(2);
   // debugText += "\n\nvel. y: " + Game.player1.vy.toFixed(2);
   // debugText += "\n\npos. x: " + Game.player1.x.toFixed(2);
   // debugText += "\n\npos. y: " + Game.player1.y.toFixed(2);
-  // Graphics.drawDebugText(debugText);
+  Graphics.drawDebugText(debugText);
 
   Graphics.update();
 }

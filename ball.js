@@ -35,8 +35,8 @@ function Ball(config) {
 
   this.tickPosition = function() {
     this._applyFriction();
-    this._applyVelocity();
     this._checkMaxVelocity();
+    this._applyVelocity();
     this.graphics.setPosition(this.x, this.y);
     this.graphics.rotate(this.angle);
   };
@@ -70,7 +70,17 @@ function Ball(config) {
 
   this._checkMaxVelocity = function() {
     var max = Game.physics.maxVelocity;
-    this.vx = (this.vx > max) ? max : this.vx;
-    this.vy = (this.vy > max) ? max : this.vy;
+    if(Math.abs(this.vx) > Game.maxRecordedSpeed) {
+      Game.maxRecordedSpeed = Math.abs(this.vx);
+    }
+    if(Math.abs(this.vy) > Game.maxRecordedSpeed) {
+      Game.maxRecordedSpeed = Math.abs(this.vy);
+    }
+    if(Math.abs(this.vx) > max) {
+      this.vx = (this.vx > 0 ? 1 : -1) * max;
+    }
+    if(Math.abs(this.vy) > max) {
+      this.vy = (this.vy > 0 ? 1 : -1) * max;
+    }
   };
 }

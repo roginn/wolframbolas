@@ -1,0 +1,49 @@
+<html>
+<head>
+</head>
+<body>
+<script src="http://cdn.peerjs.com/0.3/peer.min.js"></script>
+<script>
+var peer = new Peer({key: '3c8e8hl4a8xgvi'}),
+peerConnection,
+lastSentTimestamp;
+
+peer.on('open', function(id) {
+  console.log('My peer ID is: ' + id);
+});
+
+function host() {
+  peer.on('connection', function(conn) {
+    peerConnection = conn;
+    peerConnection.on('data', handleReceivedData);
+  });
+
+  console.log('Hosting game!');
+}
+
+function client(peerKey) {
+  peerConnection = peer.connect(peerKey);
+  peerConnection.on('data', handleReceivedData);
+
+  console.log('Connected to a new game!');
+}
+
+function send(data) {
+  lastSentTimestamp = Date.now();
+  peerConnection.send(data);
+}
+
+function handleReceivedData(data) {
+  if(data == "ACK") {
+    roundTrip = Date.now() - lastSentTimestamp;
+    console.log("ACKED - message took " + roundTrip + "ms");
+  } else {
+    send("ACK");
+    console.log('received: ' + data);
+  }
+}
+
+</script>
+</body>
+</html>
+
