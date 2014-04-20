@@ -25,6 +25,20 @@ keySetB = {
   forwardHeld:  false
 };
 
+keySetLocal = {
+  backwardHeld: false,
+  leftHeld:     false,
+  rightHeld:    false,
+  forwardHeld:  false
+};
+
+keySetRemote = {
+  backwardHeld: false,
+  leftHeld:     false,
+  rightHeld:    false,
+  forwardHeld:  false
+};
+
 function handleKeyDown(e) {
   if(!e){ var e = window.event; }
   switch(e.keyCode) {
@@ -59,5 +73,80 @@ function handleKeyUp(e) {
   return false;
 }
 
-document.onkeydown = handleKeyDown;
-document.onkeyup = handleKeyUp;
+function handleKeyDownNetwork(e) {
+  if(!e){ var e = window.event; }
+  switch(e.keyCode) {
+  case KEYCODE_UP:
+  case KEYCODE_W: {
+    if(!keySetLocal.forwardHeld) {
+      Network.keyDown(0);
+      keySetLocal.forwardHeld = true;
+    }
+    break; }
+
+  case KEYCODE_LEFT:
+  case KEYCODE_A: {
+    if(!keySetLocal.leftHeld) {
+      Network.keyDown(1);
+      keySetLocal.leftHeld = true;
+    }
+    break; }
+
+  case KEYCODE_DOWN:
+  case KEYCODE_S: {
+    if(!keySetLocal.backwardHeld) {
+      Network.keyDown(2);
+      keySetLocal.backwardHeld = true;
+    }
+    break; }
+
+  case KEYCODE_RIGHT:
+  case KEYCODE_D: {
+    if(!keySetLocal.rightHeld) {
+      Network.keyDown(3);
+      keySetLocal.rightHeld = true;
+    }
+    break; }
+  }
+
+  return false;
+}
+
+function handleKeyUpNetwork(e) {
+  if(!e){ var e = window.event; }
+  switch(e.keyCode) {
+  case KEYCODE_UP:
+  case KEYCODE_W: {
+    if(keySetLocal.forwardHeld) {
+      Network.keyUp(0);
+      keySetLocal.forwardHeld = false;
+    }
+    break; }
+
+  case KEYCODE_LEFT:
+  case KEYCODE_A: {
+    if(keySetLocal.leftHeld) {
+      Network.keyUp(1);
+      keySetLocal.leftHeld = false;
+    }
+    break; }
+
+  case KEYCODE_DOWN:
+  case KEYCODE_S: {
+    if(keySetLocal.backwardHeld) {
+      Network.keyUp(2);
+      keySetLocal.backwardHeld = false;
+    }
+    break; }
+
+  case KEYCODE_RIGHT:
+  case KEYCODE_D: {
+    if(keySetLocal.rightHeld) {
+      Network.keyUp(3);
+      keySetLocal.rightHeld = false;
+    }
+    break; }
+  }
+
+  return false;
+}
