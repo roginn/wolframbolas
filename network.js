@@ -6,7 +6,7 @@ var Network = {
   peer: null,
 
   client: function(hostKey) {
-    Network.conn = Network.peer.connect(hostKey, {reliable: false});
+    Network.conn = Network.peer.connect(hostKey, {reliable: true});
     Network.conn.on('data', Network.handleReceivedData);
 
     console.log('Connected to a new game!');
