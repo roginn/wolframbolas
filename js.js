@@ -136,7 +136,7 @@ function detectCollisions() {
       radiusSum = m1.radius + m2.radius;
 
       if(centerDist.getMagnitude() <= radiusSum){
-        Game.debug('collision between objects ' + i + ' and ' + j);
+        // Game.debug('collision between objects ' + i + ' and ' + j);
         var normal = new Vector(m1.x - m2.x, m1.y - m2.y).normalize();
         var v1 = new Vector(m1.vx, m1.vy);
         var v2 = new Vector(m2.vx, m2.vy);
@@ -216,8 +216,8 @@ function handleTick() {
 
 
   // debug text
-  var debugText = "Energy: " + Game.energy.toFixed(2);
-  debugText += "\n\nMax speed: " + Game.maxRecordedSpeed.toFixed(2);
+  // var debugText = "Energy: " + Game.energy.toFixed(2);
+  // debugText += "\n\nMax speed: " + Game.maxRecordedSpeed.toFixed(2);
   // debugText += "\n\nangle: " + Game.player1.angle.toFixed(2);
   // debugText += "\n\nang: " + Game.player1.vang;
   // debugText += "\n\nspeed: " + Game.player1.getSpeed().toFixed(2);
@@ -225,7 +225,7 @@ function handleTick() {
   // debugText += "\n\nvel. y: " + Game.player1.vy.toFixed(2);
   // debugText += "\n\npos. x: " + Game.player1.x.toFixed(2);
   // debugText += "\n\npos. y: " + Game.player1.y.toFixed(2);
-  Graphics.drawDebugText(debugText);
+  // Graphics.drawDebugText(debugText);
 
   Graphics.update();
 }

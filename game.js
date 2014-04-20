@@ -3,9 +3,7 @@ var Game = {
     height: 600,
     width: 1200
   },
-  debugMode: false,
-  debugPlayer: 0,
-  debugWall: 0,
+  debugMode: true,
   energy: 0,
   flavors: {},
   maxRecordedSpeed: 0,
@@ -24,6 +22,15 @@ var Game = {
   player1: null,
   player2: null,
   staticElements: [],
+
+  cleanUp: function() {
+    Game.movableElements.length = 0;
+    Game.staticElements.length = 0;
+    Game.flavors = {};
+    Game.maxRecordedSpeed = 0;
+    Game.numObjects = 0;
+    Graphics.cleanUp();
+  },
 
   createBalls: function() {
     function createBall(x, y, radius, group, color){
@@ -124,6 +131,7 @@ var Game = {
 
   init: function() {
     Game.debug('Starting game!');
+
     Game.debug('Initializing framework');
     Framework.init();
 
@@ -136,5 +144,11 @@ var Game = {
 
     Game.debug('Creating statics');
     Game.createWalls();
+  },
+
+  restart: function() {
+    Game.debug('Restarting game...');
+    Game.cleanUp();
+    Game.init();
   }
 };

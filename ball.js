@@ -25,7 +25,6 @@ function Ball(config) {
   Game.flavors[this.group] = Game.flavors[this.group] || {};
   Game.flavors[this.group]['size'] = Game.flavors[this.group]['size'] || 0;
   var flavorSize = Game.flavors[this.group]['size'];
-  console.log('attributing id:' + flavorSize);
   Game.flavors[this.group][this.id] = flavorSize;
   Game.flavors[this.group]['size'] = Game.flavors[this.group]['size'] + 1;
 
