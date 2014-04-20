@@ -1,35 +1,53 @@
-function Player (x, y, radius, angle) {
+// function Player(x, y, radius, angle, attractionColor) {
+function Player(config) {
+
+  this.id = Game.numObjects++;
   this.ACCEL_FACTOR = 1;
-  this.STATIC_FRIC  = 0.4;
-  this.DYNAMIC_FRIC = 0.94;
+  this.STATIC_FRIC  = Game.physics.playerStaticFriction;
+  this.DYNAMIC_FRIC = Game.physics.playerDynamicFriction;
 
   // simple turning mode
   this.CONST_TURN_FACTOR = 5;   // degrees
 
   // angular acceleration mode
-  this.ANG_ACCEL_FACTOR  = 0.8;    // degrees / tick^2
+  this.ANG_ACCEL_FACTOR  = 0.8; // degrees / tick^2
   this.ANG_DYNAMIC_FRIC  = 0.9;
   this.ANG_STATIC_FRIC   = 0.5;
 
-  this.x     = x;     // x position
-  this.y     = y;     // y position
-  this.vx    = 0;     // x component of velocity, pixels/tick
-  this.vy    = 0;     // y component of velocity, pixels/tick
-  this.angle = angle; // angle in degrees
-  this.vang  = 0;     // angular velocity, degrees/tick
+  // mandatory
+  this.x      = config.x;
+  this.y      = config.y;
+  this.radius = config.radius;
 
-  this.radius = radius;
-  this.mass   = radius;
+  // optional
+  this.vx    = config.vx    || 0;   // x component of velocity, pixels/tick
+  this.vy    = config.vy    || 0;   // y component of velocity, pixels/tick
+  this.angle = config.angle || 0;   // angle in degrees
+  this.group = config.group || 0;   // attraction color
+  this.mass  = config.mass  || this.radius;
+
+  this.vang  = 0;      // angular velocity, degrees/tick
+  this.accelCount = 0; // how many times it was accelerated
 
   this.useAngularAccel = false;
+  this.useWiggle       = false;
   this.graphics = Graphics.buildPlayerAvatar(this);
+
+  Game.movableElements.push(this);
+  Game.flavors[this.group] = Game.flavors[this.group] || {};
+  Game.flavors[this.group].size = Game.flavors[this.group].size || 0;
+  var flavorSize = Game.flavors[this.group].size;
+  Game.flavors[this.group][this.id] = flavorSize;
+  Game.flavors[this.group].size++;
 
   this.accelerate = function() {
     this._accelerate(this.ACCEL_FACTOR);
+    this._wiggle();
   };
 
   this.decelerate = function() {
     this._accelerate(-1 * this.ACCEL_FACTOR);
+    this._wiggle();
   };
 
   this.getSpeed = function() {
@@ -41,6 +59,7 @@ function Player (x, y, radius, angle) {
     this._applyAngVelocity();
     this._applyFriction();
     this._applyVelocity();
+    this._checkMaxVelocity();
     this.graphics.setPosition(this.x, this.y);
     this.graphics.rotate(this.angle);
   };
@@ -105,5 +124,18 @@ function Player (x, y, radius, angle) {
   this._applyVelocity = function() {
     this.x += this.vx;
     this.y += this.vy;
+  };
+
+  this._checkMaxVelocity = function() {
+    var max = Game.physics.maxVelocity;
+    this.vx = (this.vx > max) ? max : this.vx;
+    this.vy = (this.vy > max) ? max : this.vy;
+  };
+
+  this._wiggle = function() {
+    if(!this.useWiggle) return;
+
+    this.accelCount++;
+    this.angle += 10*Math.sin(this.accelCount);
   };
 }

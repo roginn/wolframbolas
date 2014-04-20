@@ -3,40 +3,76 @@ var Game = {
     height: 600,
     width: 1200
   },
-  ball: null,
   debugMode: false,
   debugPlayer: 0,
   debugWall: 0,
+  flavors: {},
   movableElements: [],
+  numObjects: 0,
+  physics: {
+    enableGravity: true,
+    gravityFactor: 0.1,
+    ballDynamicFriction: 0.95,
+    ballStaticFriction: 0.1,
+    collisionElasticity: 0.7,
+    maxVelocity: 10,
+    playerDynamicFriction: 0.95,
+    playerStaticFriction: 0.4
+  },
   player1: null,
   player2: null,
   staticElements: [],
 
-  createBall: function() {
-    var ballRadius = 70;
+  createBalls: function() {
+    function createBall(x, y, radius, group, color){
+      new Ball({
+        x: x,
+        y: y,
+        radius: radius,
+        group: group,
+        color: color,
+        attractionOrder: ++attractionOrder
+      });
+    }
 
-    Game.ball = new Ball(Game.area.width/2,
-                         Game.area.height/2,
-                         ballRadius,
-                         0);
+    var green = "#46ac39",
+    purple = "#4639ac",
+    wtf = "#aca039",
+    attractionOrder = 0;
 
-    Game.movableElements.push(Game.ball);
+    createBall(Game.area.width/2, Game.area.height/2, 70, 0, green);
+
+    createBall(Game.player1.x - 40, Game.player1.y, 20, 1, purple);
+    createBall(Game.player1.x - 80, Game.player1.y, 20, 1, purple);
+    createBall(Game.player1.x - 120, Game.player1.y, 20, 1, purple);
+    createBall(Game.player1.x - 160, Game.player1.y, 20, 1, purple);
+
+    createBall(Game.player2.x + 40, Game.player2.y, 20, 2, wtf);
+    createBall(Game.player2.x + 80, Game.player2.y, 20, 2, wtf);
+    createBall(Game.player2.x + 120, Game.player2.y, 20, 2, wtf);
+    createBall(Game.player2.x + 160, Game.player2.y, 20, 2, wtf);
   },
 
   createPlayers: function() {
-    var playerRadius = 20;
+    var playerRadius = 30;
 
-    Game.player1 = new Player(2*playerRadius,
-                              Game.area.height/2,
-                              playerRadius,
-                              0);
-    Game.player2 = new Player(Game.area.width - 2*playerRadius,
-                              Game.area.height/2,
-                              playerRadius,
-                              180);
+    Game.player1 = new Player({
+      x: 300,
+      y: Game.area.height/2,
+      radius: playerRadius,
+      angle: 0,
+      group: 1
+    });
 
-    Game.movableElements.push(Game.player1);
-    Game.movableElements.push(Game.player2);
+    Game.player2 = new Player({
+      x: Game.area.width - 300,
+      y: Game.area.height/2,
+      radius: playerRadius,
+      angle: 180,
+      group: 2
+    });
+
+    // Game.movableElements.push(Game.player2);
   },
 
   createWalls: function() {
@@ -76,7 +112,7 @@ var Game = {
 
     Game.debug('Creating movables');
     Game.createPlayers();
-    Game.createBall();
+    Game.createBalls();
 
     Game.debug('Creating statics');
     Game.createWalls();

@@ -18,7 +18,7 @@ function tickPositions() {
 }
 
 function fatalAttraction() {
-  var alpha = 10,
+  var alpha = Game.physics.gravityFactor;
   objLength = Game.movableElements.length;
 
   for(var i = 0; i < objLength; ++i) {
@@ -27,13 +27,18 @@ function fatalAttraction() {
     for(var j = i + 1; j < objLength; ++j) {
       var m2 = Game.movableElements[j],
       vDist = new Vector(m2.x - m1.x, m2.y - m1.y),
-      force = alpha * m1.mass * m2.mass / vDist.dotProduct(vDist);
-      if(force < 0.01) continue;
-      // console.log(force);
+      // force = alpha * m1.mass * m2.mass / vDist.dotProduct(vDist);
+      force = alpha * vDist.getMagnitude() / m2.mass;
+
+      if(m1.group != m2.group) continue;
+      var order1 = Game.flavors[m1.group][m1.id];
+      var order2 = Game.flavors[m2.group][m2.id];
+      // console.log(order1 + ' ' + order2);
+      if(Math.abs(order1 - order2) != 1) continue;
 
       var f1 = vDist.getNormalized().getScaled(force);
-      m1.vx += f1.x;
-      m1.vy += f1.y;
+      // m1.vx += f1.x;
+      // m1.vy += f1.y;
 
       var f2 = f1.getScaled(-1);
       m2.vx += f2.x;
@@ -43,7 +48,8 @@ function fatalAttraction() {
 }
 
 function collideMovableStatic(m, s, normal) {
-  var tangent = normal.getPerpendicular(),
+  var elasticity = Game.physics.collisionElasticity,
+  tangent = normal.getPerpendicular(),
   v  = new Vector(m.vx, m.vy),
   vn = normal.dotProduct(v),  // decompose normal component
   vt = tangent.dotProduct(v), // decompose tangent component
@@ -53,6 +59,7 @@ function collideMovableStatic(m, s, normal) {
   vtAfter = vt;
 
   vAfter = normal.getScaled(vnAfter).add(tangent.getScaled(vtAfter));
+  vAfter.scale(elasticity);
 
   return {
     vAfter: vAfter,
@@ -61,7 +68,8 @@ function collideMovableStatic(m, s, normal) {
 }
 
 function collideMovables(a, b, normal) {
-  var tangent = normal.getPerpendicular(),
+  var elasticity = Game.physics.collisionElasticity,
+  tangent = normal.getPerpendicular(),
   av  = new Vector(a.vx, a.vy),
   bv  = new Vector(b.vx, b.vy),
   avn = normal.dotProduct(av),  // decompose normal component
@@ -70,8 +78,8 @@ function collideMovables(a, b, normal) {
   bvt = tangent.dotProduct(bv),
   am  = a.mass,
   bm  = b.mass,
-  avnAfter = bvnAfter = avtAfter = bvtAfter = null, // scalars
-  avAfter = bvAfter = null;                         // vectors
+  avnAfter, bvnAfter, avtAfter, bvtAfter, // scalars
+  avAfter, bvAfter;                       // vectors
 
   if(am + bm === 0) {
     Game.debug('ERROR: sum of object masses must not be zero');
@@ -92,6 +100,10 @@ function collideMovables(a, b, normal) {
   // make resulting vectors
   avAfter = normal.getScaled(avnAfter).add(tangent.getScaled(avtAfter));
   bvAfter = normal.getScaled(bvnAfter).add(tangent.getScaled(bvtAfter));
+
+  // apply elasticity
+  avAfter.scale(elasticity);
+  bvAfter.scale(elasticity);
 
   // return new velocities
   return {
@@ -181,7 +193,9 @@ function handleTick() {
   // handle key presses
   tickControls();
 
-  fatalAttraction();
+  if(Game.physics.enableGravity) {
+    fatalAttraction();
+  }
 
   detectCollisions();
 

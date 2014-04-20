@@ -6,9 +6,10 @@ var Graphics = {
 
     r = ball.radius,
     x = ball.x,
-    y = ball.y;
+    y = ball.y,
+    color = ball.color || "#46ac39";
 
-    circle.graphics.beginFill("#46ac39").drawCircle(0, 0, r);
+    circle.graphics.beginFill(color).drawCircle(0, 0, r);
 
     container.addChild(circle);
     container.cache(-1 * r, -1 * r, 2 * r, 2 * r);

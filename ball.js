@@ -1,17 +1,33 @@
-function Ball (x, y, radius, angle) {
-  this.STATIC_FRIC  = 0.4;
-  this.DYNAMIC_FRIC = 0.93;
+// function Ball(x, y, radius, attractionColor) {
+function Ball(config) {
 
-  this.x     = x;     // x position
-  this.y     = y;     // y position
-  this.vx    = 0;     // x component of velocity, pixels/sec
-  this.vy    = 0;     // y component of velocity, pixels/sec
+  this.id = Game.numObjects++;
+  this.STATIC_FRIC = Game.physics.ballStaticFriction;
+  this.DYNAMIC_FRIC = Game.physics.ballDynamicFriction;
 
-  this.radius = radius;
-  this.mass   = radius;
+  // mandatory
+  this.x      = config.x;
+  this.y      = config.y;
+  this.radius = config.radius;
 
-  this.colliding = false;
+  // optional
+  this.vx    = config.vx    || 0;   // x component of velocity, pixels/tick
+  this.vy    = config.vy    || 0;   // y component of velocity, pixels/tick
+  this.angle = config.angle || 0;   // angle in degrees
+  this.group = config.group || 0;   // attraction color
+  this.mass  = config.mass  || this.radius;
+  this.color = config.color;
+
+  this.attractionOrder = config.attractionOrder || 0;
   this.graphics = Graphics.buildBallAvatar(this);
+
+  Game.movableElements.push(this);
+  Game.flavors[this.group] = Game.flavors[this.group] || {};
+  Game.flavors[this.group]['size'] = Game.flavors[this.group]['size'] || 0;
+  var flavorSize = Game.flavors[this.group]['size'];
+  console.log('attributing id:' + flavorSize);
+  Game.flavors[this.group][this.id] = flavorSize;
+  Game.flavors[this.group]['size'] = Game.flavors[this.group]['size'] + 1;
 
   this.getSpeed = function() {
     return Math.sqrt(Math.pow(this.vx, 2) + Math.pow(this.vy, 2));
@@ -20,6 +36,7 @@ function Ball (x, y, radius, angle) {
   this.tickPosition = function() {
     this._applyFriction();
     this._applyVelocity();
+    this._checkMaxVelocity();
     this.graphics.setPosition(this.x, this.y);
     this.graphics.rotate(this.angle);
   };
@@ -49,5 +66,11 @@ function Ball (x, y, radius, angle) {
   this._applyVelocity = function() {
     this.x += this.vx;
     this.y += this.vy;
+  };
+
+  this._checkMaxVelocity = function() {
+    var max = Game.physics.maxVelocity;
+    this.vx = (this.vx > max) ? max : this.vx;
+    this.vy = (this.vy > max) ? max : this.vy;
   };
 }
