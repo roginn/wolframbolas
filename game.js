@@ -55,23 +55,23 @@ var Game = {
     wtf = "#aca039",
     attractionOrder = 0;
 
-    createBall(Game.area.width/2, Game.area.height/2, 70, 0, green);
+    createBall(Game.area.width/2, Game.area.height/2, 20, 0, green);
 
-    // createBall(Game.player1.x - 40, Game.player1.y, 20, 1, purple);
-    // createBall(Game.player1.x - 80, Game.player1.y, 20, 1, purple);
-    // createBall(Game.player1.x - 120, Game.player1.y, 20, 1, purple);
-    // createBall(Game.player1.x - 160, Game.player1.y, 20, 1, purple);
-    // createBall(Game.player1.x - 200, Game.player1.y, 20, 1, purple);
+    createBall(Game.player1.x - 40, Game.player1.y, 20, 1, purple);
+    createBall(Game.player1.x - 80, Game.player1.y, 20, 1, purple);
+    createBall(Game.player1.x - 120, Game.player1.y, 20, 1, purple);
+    createBall(Game.player1.x - 160, Game.player1.y, 20, 1, purple);
+    createBall(Game.player1.x - 200, Game.player1.y, 20, 1, purple);
 
-    // createBall(Game.player2.x + 40, Game.player2.y, 20, 2, wtf);
-    // createBall(Game.player2.x + 80, Game.player2.y, 20, 2, wtf);
-    // createBall(Game.player2.x + 120, Game.player2.y, 20, 2, wtf);
-    // createBall(Game.player2.x + 160, Game.player2.y, 20, 2, wtf);
-    // createBall(Game.player2.x + 200, Game.player2.y, 20, 2, wtf);
+    createBall(Game.player2.x + 40, Game.player2.y, 20, 2, wtf);
+    createBall(Game.player2.x + 80, Game.player2.y, 20, 2, wtf);
+    createBall(Game.player2.x + 120, Game.player2.y, 20, 2, wtf);
+    createBall(Game.player2.x + 160, Game.player2.y, 20, 2, wtf);
+    createBall(Game.player2.x + 200, Game.player2.y, 20, 2, wtf);
   },
 
   createPlayers: function() {
-    var playerRadius = 30;
+    var playerRadius = 40;
 
     Game.player1 = new Player({
       x: 300,
