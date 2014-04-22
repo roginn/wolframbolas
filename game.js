@@ -46,6 +46,7 @@ var Game = {
         radius: radius,
         group: group,
         color: color,
+	mass: 20,
         attractionOrder: ++attractionOrder
       });
     }
@@ -55,7 +56,7 @@ var Game = {
     wtf = "#aca039",
     attractionOrder = 0;
 
-    createBall(Game.area.width/2, Game.area.height/2, 40, 0, green);
+    createBall(Game.area.width/2, Game.area.height/2, 70, 0, green);
 
     // createBall(Game.player1.x - 40, Game.player1.y, 20, 1, purple);
     // createBall(Game.player1.x - 80, Game.player1.y, 20, 1, purple);
