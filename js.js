@@ -213,6 +213,39 @@ function detectCollisions() {
   }
 }
 
+function checkIfGoalHappened() {
+  var ball = Game.ball,
+  lower = (Game.area.height - Game.goal.height)/2,
+  upper = (Game.area.height + Game.goal.height)/2,
+  left = Game.goal.width,
+  right = Game.area.width - Game.goal.width;
+
+  if(ball.y >= lower && ball.y <= upper) {
+    if(ball.x < left) {
+      handleGoal(2);
+    } else if(ball.x > right) {
+      handleGoal(1);
+    }
+  }
+
+}
+
+function handleGoal(player) {
+  if(player == 1) {
+    Game.score.p1++;
+  } else {
+    Game.score.p2++;
+  }
+
+  if(Game.useNetwork) {
+    Game.restartIfNetwork();
+  } else {
+    Game.restart();
+  }
+
+  return;
+}
+
 function handleTickNetwork() {
   if(Framework.isTickPaused()) return;
   Framework.pauseTick();
@@ -243,6 +276,8 @@ function handleTickAfterExchange() {
 
   // handle objects movement
   tickPositions();
+  checkIfGoalHappened();
+  Graphics.drawScore(Game.score.p1, Game.score.p2);
 
   Graphics.update();
   Framework.resumeTick();
@@ -260,6 +295,8 @@ function handleTick() {
 
   // handle objects movement
   tickPositions();
+  checkIfGoalHappened();
+  Graphics.drawScore(Game.score.p1, Game.score.p2);
 
   // calculateEnergy();
 

@@ -72,16 +72,24 @@ var Graphics = {
     Graphics.debugText.text = msg;
   },
 
+  drawScore: function(p1, p2) {
+    Graphics.scoreText.text = p1 + ' x ' + p2;
+  },
+
   init: function() {
     Graphics.stage = new createjs.Stage('canvas');;
 
-    // if(Game.debugMode) {
-      var text = new createjs.Text("", "20px Courier New", "#0000ff");
-      text.x = Graphics.stage.canvas.width - 300;
-      text.y = 100;
-      Graphics.debugText = text;
-      Graphics.stage.addChild(text);
-    // }
+    var debugText = new createjs.Text("", "20px Courier New", "#0000ff");
+    debugText.x = Graphics.stage.canvas.width - 300;
+    debugText.y = 100;
+    Graphics.debugText = debugText;
+    Graphics.stage.addChild(debugText);
+
+    var scoreText = new createjs.Text("0 x 0", "20px Courier New", "white");
+    scoreText.x = 0;
+    scoreText.y = 10;
+    Graphics.scoreText = scoreText;
+    Graphics.stage.addChild(scoreText);
   },
 
   update: function() {

@@ -25,6 +25,12 @@ var Network = {
         for(var i = 0; i < stateLength; ++i) {
           Game.allElements[i].loadState(data.state[i]);
         }
+
+        if(Game.score.p1 != data.score.p1 || Game.score.p2 != data.score.p2) {
+          Game.score.p1 = data.score.p1;
+          Game.score.p2 = data.score.p2;
+          Graphics.drawScore(Game.score.p1, Game.score.p2);
+        }
       }
 
       var controlLength = data.controls.length;
@@ -99,6 +105,11 @@ var Network = {
       for(var i = 0; i < elementsLength; ++i) {
         obj.state.push(Game.allElements[i].getState());
       }
+
+      obj.score = {
+        p1: Game.score.p1,
+        p2: Game.score.p2
+      };
     }
 
     Network.send(obj);

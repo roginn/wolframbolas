@@ -4,9 +4,14 @@ var Game = {
     height: 600,
     width: 1200
   },
+  ball: null,
   debugMode: true,
   energy: 0,
   flavors: {},
+  goal: {
+    height: 300,
+    width: 100
+  },
   localPlayer: null,
   maxRecordedSpeed: 0,
   movableElements: [],
@@ -25,6 +30,10 @@ var Game = {
   player2: null,
   remotePlayer: null,
   remoteTurn: 0,
+  score: {
+    p1: 0,
+    p2: 0
+  },
   staticElements: [],
   turn: 0,
   useNetwork: true,
@@ -40,13 +49,13 @@ var Game = {
 
   createBalls: function() {
     function createBall(x, y, radius, group, color){
-      new Ball({
+      return new Ball({
         x: x,
         y: y,
         radius: radius,
         group: group,
         color: color,
-	mass: 20,
+      	mass: 20,
         attractionOrder: ++attractionOrder
       });
     }
@@ -56,7 +65,7 @@ var Game = {
     wtf = "#aca039",
     attractionOrder = 0;
 
-    createBall(Game.area.width/2, Game.area.height/2, 70, 0, green);
+    Game.ball = createBall(Game.area.width/2, Game.area.height/2, 70, 0, green);
 
     // createBall(Game.player1.x - 40, Game.player1.y, 20, 1, purple);
     // createBall(Game.player1.x - 80, Game.player1.y, 20, 1, purple);
@@ -99,9 +108,13 @@ var Game = {
     }
   },
 
+  createScore: function() {
+
+  },
+
   createWalls: function() {
-    var goalWidth = 100,
-    goalHeight = 300,
+    var goalWidth = Game.goal.width,
+    goalHeight = Game.goal.height,
     areaWidth = Game.area.width,
     areaHeight = Game.area.height;
 
@@ -171,6 +184,41 @@ var Game = {
     Game.debug('Restarting game...');
     Game.cleanUp();
     Game.init();
+  },
+
+  restartIfNetwork: function() {
+    //
+    // this function screams for refactoring! D=
+    //
+
+    var player1State = {
+      x: 300,
+      y: Game.area.height/2,
+      vx: 0,
+      vy: 0,
+      angle: 0
+    };
+
+
+    var player2State = {
+      x: Game.area.width - 300,
+      y: Game.area.height/2,
+      vx: 0,
+      vy: 0,
+      angle: 180
+    };
+
+    var ballState = {
+      x: Game.area.width/2,
+      y: Game.area.height/2,
+      vx: 0,
+      vy: 0,
+      angle: 0
+    };
+
+    Game.player1.loadState(player1State);
+    Game.player2.loadState(player2State);
+    Game.ball.loadState(ballState);
   },
 
   setupControls: function() {
