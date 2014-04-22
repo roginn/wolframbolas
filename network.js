@@ -99,7 +99,7 @@ var Network = {
       controls: Network.buffer
     };
 
-    if(Network.isHost && Game.turn % 10 == 0) {
+    if(Network.isHost && Game.turn % 30 == 0) {
       obj.state = [];
       var elementsLength = Game.allElements.length;
       for(var i = 0; i < elementsLength; ++i) {
