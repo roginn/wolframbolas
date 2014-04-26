@@ -16,16 +16,6 @@ var Game = {
   maxRecordedSpeed: 0,
   movableElements: [],
   numObjects: 0,
-  physics: {
-    enableGravity: true,
-    gravityFactor: 0.1,
-    ballDynamicFriction: 0.95,
-    ballStaticFriction: 0.1,
-    collisionElasticity: 0.7,
-    maxVelocity: 15,
-    playerDynamicFriction: 0.95,
-    playerStaticFriction: 0.4
-  },
   player1: null,
   player2: null,
   remotePlayer: null,

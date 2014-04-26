@@ -3,8 +3,8 @@ function Player(config) {
 
   this.id = Game.numObjects++;
   this.ACCEL_FACTOR = 1;
-  this.STATIC_FRIC  = Game.physics.playerStaticFriction;
-  this.DYNAMIC_FRIC = Game.physics.playerDynamicFriction;
+  this.STATIC_FRIC  = Physics.playerStaticFriction;
+  this.DYNAMIC_FRIC = Physics.playerDynamicFriction;
 
   // simple turning mode
   this.CONST_TURN_FACTOR = 5;   // degrees
@@ -146,7 +146,7 @@ function Player(config) {
   };
 
   this._checkMaxVelocity = function() {
-    var max = Game.physics.maxVelocity;
+    var max = Physics.maxVelocity;
     if(Math.abs(this.vx) > Game.maxRecordedSpeed) {
       Game.maxRecordedSpeed = Math.abs(this.vx);
     }

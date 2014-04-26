@@ -2,8 +2,8 @@
 function Ball(config) {
 
   this.id = Game.numObjects++;
-  this.STATIC_FRIC = Game.physics.ballStaticFriction;
-  this.DYNAMIC_FRIC = Game.physics.ballDynamicFriction;
+  this.STATIC_FRIC = Physics.ballStaticFriction;
+  this.DYNAMIC_FRIC = Physics.ballDynamicFriction;
 
   // mandatory
   this.x      = config.x;
@@ -87,7 +87,7 @@ function Ball(config) {
   };
 
   this._checkMaxVelocity = function() {
-    var max = Game.physics.maxVelocity;
+    var max = Physics.maxVelocity;
     if(Math.abs(this.vx) > Game.maxRecordedSpeed) {
       Game.maxRecordedSpeed = Math.abs(this.vx);
     }
