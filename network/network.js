@@ -14,48 +14,42 @@ var Network = {
   },
 
   handleReceivedData: function(data) {
-    if(data == "ACK") {
-      // roundTrip = Date.now() - Network.lastSentTimestamp;
-      // console.log("ACKED - message took " + roundTrip + "ms");
-    } else {
-
-      // synchronize object states
-      if(typeof data.state !== "undefined") {
-        var stateLength = data.state.length;
-        for(var i = 0; i < stateLength; ++i) {
-          Game.allElements[i].loadState(data.state[i]);
-        }
-
-        if(Game.score.p1 != data.score.p1 || Game.score.p2 != data.score.p2) {
-          Game.score.p1 = data.score.p1;
-          Game.score.p2 = data.score.p2;
-          Graphics.drawScore(Game.score.p1, Game.score.p2);
-        }
+    // synchronize object states
+    if(typeof data.state !== "undefined") {
+      var stateLength = data.state.length;
+      for(var i = 0; i < stateLength; ++i) {
+        Game.allElements[i].loadState(data.state[i]);
       }
 
-      var controlLength = data.controls.length;
-      for(var i = 0; i < controlLength; ++i) {
-        var c = data.controls[i];
-        if(c.action == 'u') {
-          switch(c.key) {
-          case 0: keySetRemote.forwardHeld  = false; break;
-          case 1: keySetRemote.leftHeld     = false; break;
-          case 2: keySetRemote.backwardHeld = false; break;
-          case 3: keySetRemote.rightHeld    = false; break;
-          }
-        } else {
-          switch(c.key) {
-          case 0: keySetRemote.forwardHeld  = true; break;
-          case 1: keySetRemote.leftHeld     = true; break;
-          case 2: keySetRemote.backwardHeld = true; break;
-          case 3: keySetRemote.rightHeld    = true; break;
-          }
-        }
+      if(Game.score.p1 != data.score.p1 || Game.score.p2 != data.score.p2) {
+        Game.score.p1 = data.score.p1;
+        Game.score.p2 = data.score.p2;
+        Graphics.drawScore(Game.score.p1, Game.score.p2);
       }
-
-      Game.remoteTurn = data.turn;
-      handleTickAfterExchange();
     }
+
+    var controlLength = data.controls.length;
+    for(var i = 0; i < controlLength; ++i) {
+      var c = data.controls[i];
+      if(c.action == 'u') {
+        switch(c.key) {
+        case 0: keySetRemote.forwardHeld  = false; break;
+        case 1: keySetRemote.leftHeld     = false; break;
+        case 2: keySetRemote.backwardHeld = false; break;
+        case 3: keySetRemote.rightHeld    = false; break;
+        }
+      } else {
+        switch(c.key) {
+        case 0: keySetRemote.forwardHeld  = true; break;
+        case 1: keySetRemote.leftHeld     = true; break;
+        case 2: keySetRemote.backwardHeld = true; break;
+        case 3: keySetRemote.rightHeld    = true; break;
+        }
+      }
+    }
+
+    Game.remoteTurn = data.turn;
+    handleTickAfterExchange();
   },
 
   host: function() {
@@ -99,7 +93,7 @@ var Network = {
       controls: Network.buffer
     };
 
-    if(Network.isHost && Game.turn % 10 == 0) {
+    if(Network.isHost && Game.turn % 10 === 0) {
       obj.state = [];
       var elementsLength = Game.allElements.length;
       for(var i = 0; i < elementsLength; ++i) {

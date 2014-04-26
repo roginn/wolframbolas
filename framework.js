@@ -1,9 +1,9 @@
 var Framework = {
   init: function() {
     if(Game.useNetwork) {
-      createjs.Ticker.addEventListener("tick", handleTickNetwork);
+      createjs.Ticker.addEventListener("tick", Game.handleTickNetwork);
     } else {
-      createjs.Ticker.addEventListener("tick", handleTick);
+      createjs.Ticker.addEventListener("tick", Game.handleTick);
     }
     createjs.Ticker.setFPS(30);
     createjs.Ticker.useRAF = true;

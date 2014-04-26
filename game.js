@@ -37,135 +37,100 @@ var Game = {
     Graphics.cleanUp();
   },
 
-  createBalls: function() {
-    function createBall(x, y, radius, group, color){
-      return new Ball({
-        x: x,
-        y: y,
-        radius: radius,
-        group: group,
-        color: color,
-      	mass: 20,
-        attractionOrder: ++attractionOrder
-      });
-    }
-
-    var green = "#46ac39",
-    purple = "#4639ac",
-    wtf = "#aca039",
-    attractionOrder = 0;
-
-    Game.ball = createBall(Game.area.width/2, Game.area.height/2, 70, 0, green);
-
-    // createBall(Game.player1.x - 40, Game.player1.y, 20, 1, purple);
-    // createBall(Game.player1.x - 80, Game.player1.y, 20, 1, purple);
-    // createBall(Game.player1.x - 120, Game.player1.y, 20, 1, purple);
-    // createBall(Game.player1.x - 160, Game.player1.y, 20, 1, purple);
-    // createBall(Game.player1.x - 200, Game.player1.y, 20, 1, purple);
-
-    // createBall(Game.player2.x + 40, Game.player2.y, 20, 2, wtf);
-    // createBall(Game.player2.x + 80, Game.player2.y, 20, 2, wtf);
-    // createBall(Game.player2.x + 120, Game.player2.y, 20, 2, wtf);
-    // createBall(Game.player2.x + 160, Game.player2.y, 20, 2, wtf);
-    // createBall(Game.player2.x + 200, Game.player2.y, 20, 2, wtf);
-  },
-
-  createPlayers: function() {
-    var playerRadius = 40;
-
-    Game.player1 = new Player({
-      x: 300,
-      y: Game.area.height/2,
-      radius: playerRadius,
-      angle: 0,
-      group: 1
-    });
-
-    Game.player2 = new Player({
-      x: Game.area.width - 300,
-      y: Game.area.height/2,
-      radius: playerRadius,
-      angle: 180,
-      group: 2
-    });
-
-    if(Network.isHost) {
-      Game.localPlayer = Game.player1;
-      Game.remotePlayer = Game.player2;
-    } else {
-      Game.localPlayer = Game.player2;
-      Game.remotePlayer = Game.player1;
-    }
-  },
-
-  createScore: function() {
-
-  },
-
-  createWalls: function() {
-    var goalWidth = Game.goal.width,
-    goalHeight = Game.goal.height,
-    areaWidth = Game.area.width,
-    areaHeight = Game.area.height;
-
-    function createVertex(x, y) {
-      new Ball({
-        x: x,
-        y: y,
-        radius: 3,
-        group: -1,
-        color: "white",
-        mass: 1e20
-      });
-    }
-
-    new Wall(goalWidth, 0, areaWidth - goalWidth, 0);
-    new Wall(areaWidth - goalWidth, 0, areaWidth - goalWidth, (areaHeight - goalHeight)/2);
-    createVertex(areaWidth - goalWidth, (areaHeight - goalHeight)/2);
-    new Wall(areaWidth - goalWidth, (areaHeight - goalHeight)/2, areaWidth, (areaHeight - goalHeight)/2);
-    new Wall(areaWidth, (areaHeight - goalHeight)/2, areaWidth, (areaHeight + goalHeight)/2);
-    new Wall(areaWidth, (areaHeight + goalHeight)/2, areaWidth - goalWidth, (areaHeight + goalHeight)/2);
-    createVertex(areaWidth - goalWidth, (areaHeight + goalHeight)/2);
-    new Wall(areaWidth - goalWidth, (areaHeight + goalHeight)/2, areaWidth - goalWidth, areaHeight);
-    new Wall(areaWidth - goalWidth, areaHeight, goalWidth, areaHeight);
-    new Wall(goalWidth, areaHeight, goalWidth, (areaHeight + goalHeight)/2);
-    createVertex(goalWidth, (areaHeight + goalHeight)/2);
-    new Wall(goalWidth, (areaHeight + goalHeight)/2, 0, (areaHeight + goalHeight)/2);
-    new Wall(0, (areaHeight + goalHeight)/2, 0, (areaHeight - goalHeight)/2);
-    new Wall(0, (areaHeight - goalHeight)/2, goalWidth, (areaHeight - goalHeight)/2);
-    createVertex(goalWidth, (areaHeight - goalHeight)/2);
-    new Wall(goalWidth, (areaHeight - goalHeight)/2, goalWidth, 0);
-
-
-  },
-
   debug: function(msg) {
     if(console && console.log && Game.debugMode) {
       console.log('[DEBUG] ' + msg);
     }
   },
 
+  handleGoal: function(player) {
+    if(player == 1) {
+      Game.score.p1++;
+    } else {
+      Game.score.p2++;
+    }
+
+    if(Game.useNetwork) {
+      Game.restartIfNetwork();
+    } else {
+      Game.restart();
+    }
+
+    return;
+  },
+
+  handleTickNetwork: function() {
+    if(Framework.isTickPaused()) return;
+    Framework.pauseTick();
+
+    // careful with this order!
+    Game.turn++;
+    Network.sendControls(Game.turn);
+    Game.handleTickAfterExchange();
+  },
+
+  handleTickAfterExchange: function() {
+    // both handleTickNetwork and Network.receiveData
+    // call this function - it should run only after
+    // the game turn has been synchronized
+    // Game.debug('Turn: ' + Game.turn + ', remoteTurn: ' + Game.remoteTurn);
+    if(Game.remoteTurn != Game.turn) {
+      return;
+    }
+
+    tickControls();
+
+    if(Physics.enableGravity) {
+      Physics.fatalAttraction();
+    }
+
+    Physics.detectCollisions();
+
+    // handle objects movement
+    Physics.tickPositions();
+    Graphics.drawScore(Game.score.p1, Game.score.p2);
+
+    Graphics.update();
+    Framework.resumeTick();
+  },
+
+  handleTick: function() {
+    // handle key presses
+    tickControls();
+
+    if(Physics.enableGravity) {
+      Physics.fatalAttraction();
+    }
+
+    Physics.detectCollisions();
+
+    // handle objects movement
+    Physics.tickPositions();
+    Graphics.drawScore(Game.score.p1, Game.score.p2);
+
+
+    // debug text
+    // Physics.calculateEnergy();
+    // var debugText = "Energy: " + Game.energy.toFixed(2);
+    // debugText += "\n\nMax speed: " + Game.maxRecordedSpeed.toFixed(2);
+    // Graphics.drawDebugText(debugText);
+
+    Graphics.update();
+  },
+
+
   init: function() {
     Game.debug('Initializing graphics');
     Graphics.init();
 
-    Game.debug('Creating movables');
-    Game.createPlayers();
-    Game.createBalls();
-
-    Game.debug('Creating statics');
-    Game.createWalls();
+    Game.debug('Creating scenario');
+    Scenario.create();
 
     Game.debug('Controls setup');
     Game.setupControls();
 
     Game.debug('Initializing framework');
     setTimeout(Framework.init, 2000);
-
-    // if(Game.useNetwork) {
-    //   Game.debug('Initializing Network');
-      // Network.init();
-    // }
 
     Game.debug('Game started!');
   },

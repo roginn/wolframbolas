@@ -77,7 +77,7 @@ var Graphics = {
   },
 
   init: function() {
-    Graphics.stage = new createjs.Stage('canvas');;
+    Graphics.stage = new createjs.Stage('canvas');
 
     var debugText = new createjs.Text("", "20px Courier New", "#0000ff");
     debugText.x = Graphics.stage.canvas.width - 300;

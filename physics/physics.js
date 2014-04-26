@@ -19,6 +19,22 @@ var Physics = {
     }
   },
 
+  checkIfGoalHappened: function() {
+    var ball = Game.ball,
+    lower = (Game.area.height - Game.goal.height)/2,
+    upper = (Game.area.height + Game.goal.height)/2,
+    left = Game.goal.width,
+    right = Game.area.width - Game.goal.width;
+
+    if(ball.y >= lower && ball.y <= upper) {
+      if(ball.x < left) {
+        Game.handleGoal(2);
+      } else if(ball.x > right) {
+        Game.handleGoal(1);
+      }
+    }
+  },
+
   collideMovables: function(a, b, normal) {
     var elasticity = Physics.collisionElasticity,
     tangent = normal.getPerpendicular(),
@@ -176,5 +192,14 @@ var Physics = {
         m2.vy += f2.y;
       }
     }
+  },
+
+  tickPositions: function() {
+    for(var i in Game.movableElements) {
+      var e = Game.movableElements[i];
+      e.tickPosition();
+    }
+
+    Physics.checkIfGoalHappened();
   }
 };

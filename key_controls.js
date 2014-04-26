@@ -40,7 +40,7 @@ keySetRemote = {
 };
 
 function handleKeyDown(e) {
-  if(!e){ var e = window.event; }
+  // if(!e){ var e = window.event; }
   switch(e.keyCode) {
   case KEYCODE_UP:    keySetA.forwardHeld  = true; break;
   case KEYCODE_LEFT:  keySetA.leftHeld     = true; break;
@@ -57,7 +57,7 @@ function handleKeyDown(e) {
 }
 
 function handleKeyUp(e) {
-  if(!e){ var e = window.event; }
+  // if(!e){ var e = window.event; }
   switch(e.keyCode) {
   case KEYCODE_UP:    keySetA.forwardHeld  = false; break;
   case KEYCODE_LEFT:  keySetA.leftHeld     = false; break;
@@ -74,7 +74,7 @@ function handleKeyUp(e) {
 }
 
 function handleKeyDownNetwork(e) {
-  if(!e){ var e = window.event; }
+  // if(!e){ var e = window.event; }
   switch(e.keyCode) {
   case KEYCODE_UP:
   case KEYCODE_W: {
@@ -113,7 +113,7 @@ function handleKeyDownNetwork(e) {
 }
 
 function handleKeyUpNetwork(e) {
-  if(!e){ var e = window.event; }
+  // if(!e){ var e = window.event; }
   switch(e.keyCode) {
   case KEYCODE_UP:
   case KEYCODE_W: {
@@ -149,4 +149,30 @@ function handleKeyUpNetwork(e) {
   }
 
   return false;
+}
+
+function tickControls() {
+  if(Game.useNetwork) {
+    if(keySetLocal.leftHeld)     { Game.localPlayer.turnCounterClockwise(); }
+    if(keySetLocal.rightHeld)    { Game.localPlayer.turnClockwise(); }
+    if(keySetLocal.forwardHeld)  { Game.localPlayer.accelerate(); }
+    if(keySetLocal.backwardHeld) { Game.localPlayer.decelerate(); }
+
+    if(keySetRemote.leftHeld)     { Game.remotePlayer.turnCounterClockwise(); }
+    if(keySetRemote.rightHeld)    { Game.remotePlayer.turnClockwise(); }
+    if(keySetRemote.forwardHeld)  { Game.remotePlayer.accelerate(); }
+    if(keySetRemote.backwardHeld) { Game.remotePlayer.decelerate(); }
+
+  } else {
+
+    if(keySetB.leftHeld)     { Game.player1.turnCounterClockwise(); }
+    if(keySetB.rightHeld)    { Game.player1.turnClockwise(); }
+    if(keySetB.forwardHeld)  { Game.player1.accelerate(); }
+    if(keySetB.backwardHeld) { Game.player1.decelerate(); }
+
+    if(keySetA.leftHeld)     { Game.player2.turnCounterClockwise(); }
+    if(keySetA.rightHeld)    { Game.player2.turnClockwise(); }
+    if(keySetA.forwardHeld)  { Game.player2.accelerate(); }
+    if(keySetA.backwardHeld) { Game.player2.decelerate(); }
+  }
 }
