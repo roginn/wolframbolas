@@ -1,178 +1,116 @@
-var KEYCODE_ENTER = 13;
-var KEYCODE_SPACE = 32;
-
-var KEYCODE_LEFT  = 37;
-var KEYCODE_UP    = 38;
-var KEYCODE_RIGHT = 39;
-var KEYCODE_DOWN  = 40;
-
-var KEYCODE_W     = 87;
-var KEYCODE_A     = 65;
-var KEYCODE_S     = 83;
-var KEYCODE_D     = 68;
-
-keySetA = {
-  backwardHeld: false,
-  leftHeld:     false,
-  rightHeld:    false,
-  forwardHeld:  false
+function KeySet() {
+  this.backwardHeld = false;
+  this.leftHeld     = false;
+  this.rightHeld    = false;
+  this.forwardHeld  = false;
 };
 
-keySetB = {
-  backwardHeld: false,
-  leftHeld:     false,
-  rightHeld:    false,
-  forwardHeld:  false
+var KeyControls = {
+  KEYCODE_ENTER: 13,
+  KEYCODE_SPACE: 32,
+
+  KEYCODE_LEFT:  37,
+  KEYCODE_UP:    38,
+  KEYCODE_RIGHT: 39,
+  KEYCODE_DOWN:  40,
+
+  KEYCODE_W:     87,
+  KEYCODE_A:     65,
+  KEYCODE_S:     83,
+  KEYCODE_D:     68,
+
+  keySetA:      new KeySet(),
+  keySetB:      new KeySet(),
+  keySetLocal:  new KeySet(),
+  keySetRemote: new KeySet(),
+
+  makeControlTicker: function(keySetX, keySetY, playerX, playerY) {
+    return function() {
+      if(keySetX.leftHeld)     { playerX.turnCounterClockwise(); }
+      if(keySetX.rightHeld)    { playerX.turnClockwise(); }
+      if(keySetX.forwardHeld)  { playerX.accelerate(); }
+      if(keySetX.backwardHeld) { playerX.decelerate(); }
+
+      if(keySetY.leftHeld)     { playerY.turnCounterClockwise(); }
+      if(keySetY.rightHeld)    { playerY.turnClockwise(); }
+      if(keySetY.forwardHeld)  { playerY.accelerate(); }
+      if(keySetY.backwardHeld) { playerY.decelerate(); }
+    }
+  },
+
+  makeKeyEventHandler: function(arrowHandler, wasdHandler) {
+    // if only one handler was provided, both arrows and WASD should use it
+    if(typeof wasdHandler === 'undefined') {
+      wasdHandler = arrowHandler;
+    }
+
+    return function handleKeyEvent(e) {
+      switch(e.keyCode) {
+      case KeyControls.KEYCODE_UP:    arrowHandler('forward');  break;
+      case KeyControls.KEYCODE_LEFT:  arrowHandler('left');     break;
+      case KeyControls.KEYCODE_DOWN:  arrowHandler('backward'); break;
+      case KeyControls.KEYCODE_RIGHT: arrowHandler('right');    break;
+
+      case KeyControls.KEYCODE_W: wasdHandler('forward');  break;
+      case KeyControls.KEYCODE_A: wasdHandler('left');     break;
+      case KeyControls.KEYCODE_S: wasdHandler('backward'); break;
+      case KeyControls.KEYCODE_D: wasdHandler('right');    break;
+      }
+
+      return false;
+    }
+  },
+
+  setup: function() {
+    if(Game.useNetwork) {
+      KeyControls.setupNetworkControls();
+      KeyControls.tickControls = KeyControls.makeControlTicker(
+        KeyControls.keySetLocal,
+        KeyControls.keySetRemote,
+        Game.localPlayer,
+        Game.remotePlayer);
+    } else {
+      KeyControls.setupLocalControls();
+      KeyControls.tickControls = KeyControls.makeControlTicker(
+        KeyControls.keySetB,
+        KeyControls.keySetA,
+        Game.player1,
+        Game.player2);
+    }
+  },
+
+  setupLocalControls: function() {
+    document.onkeydown = KeyControls.makeKeyEventHandler(
+      function(direction){ KeyControls.keySetA[direction + 'Held'] = true; },
+      function(direction){ KeyControls.keySetB[direction + 'Held'] = true; }
+    );
+
+    document.onkeyup = KeyControls.makeKeyEventHandler(
+      function(direction){ KeyControls.keySetA[direction + 'Held'] = false; },
+      function(direction){ KeyControls.keySetB[direction + 'Held'] = false; }
+    );
+  },
+
+  setupNetworkControls: function() {
+    var networkKeyMap = {
+      forward:  0,
+      left:     1,
+      backward: 2,
+      right:    3
+    };
+
+    document.onkeydown = KeyControls.makeKeyEventHandler(function (direction) {
+      if(!KeyControls.keySetLocal[direction + 'Held']) {
+        Network.keyDown(networkKeyMap[direction]);
+        KeyControls.keySetLocal[direction + 'Held'] = true;
+      }
+    });
+
+    document.onkeyup = KeyControls.makeKeyEventHandler(function (direction) {
+      if(KeyControls.keySetLocal[direction + 'Held']) {
+        Network.keyUp(networkKeyMap[direction]);
+        KeyControls.keySetLocal[direction + 'Held'] = false;
+      }
+    });
+  }
 };
-
-keySetLocal = {
-  backwardHeld: false,
-  leftHeld:     false,
-  rightHeld:    false,
-  forwardHeld:  false
-};
-
-keySetRemote = {
-  backwardHeld: false,
-  leftHeld:     false,
-  rightHeld:    false,
-  forwardHeld:  false
-};
-
-function handleKeyDown(e) {
-  // if(!e){ var e = window.event; }
-  switch(e.keyCode) {
-  case KEYCODE_UP:    keySetA.forwardHeld  = true; break;
-  case KEYCODE_LEFT:  keySetA.leftHeld     = true; break;
-  case KEYCODE_DOWN:  keySetA.backwardHeld = true; break;
-  case KEYCODE_RIGHT: keySetA.rightHeld    = true; break;
-
-  case KEYCODE_W: keySetB.forwardHeld  = true; break;
-  case KEYCODE_A: keySetB.leftHeld     = true; break;
-  case KEYCODE_S: keySetB.backwardHeld = true; break;
-  case KEYCODE_D: keySetB.rightHeld    = true; break;
-  }
-
-  return false;
-}
-
-function handleKeyUp(e) {
-  // if(!e){ var e = window.event; }
-  switch(e.keyCode) {
-  case KEYCODE_UP:    keySetA.forwardHeld  = false; break;
-  case KEYCODE_LEFT:  keySetA.leftHeld     = false; break;
-  case KEYCODE_DOWN:  keySetA.backwardHeld = false; break;
-  case KEYCODE_RIGHT: keySetA.rightHeld    = false; break;
-
-  case KEYCODE_W: keySetB.forwardHeld  = false; break;
-  case KEYCODE_A: keySetB.leftHeld     = false; break;
-  case KEYCODE_S: keySetB.backwardHeld = false; break;
-  case KEYCODE_D: keySetB.rightHeld    = false; break;
-  }
-
-  return false;
-}
-
-function handleKeyDownNetwork(e) {
-  // if(!e){ var e = window.event; }
-  switch(e.keyCode) {
-  case KEYCODE_UP:
-  case KEYCODE_W: {
-    if(!keySetLocal.forwardHeld) {
-      Network.keyDown(0);
-      keySetLocal.forwardHeld = true;
-    }
-    break; }
-
-  case KEYCODE_LEFT:
-  case KEYCODE_A: {
-    if(!keySetLocal.leftHeld) {
-      Network.keyDown(1);
-      keySetLocal.leftHeld = true;
-    }
-    break; }
-
-  case KEYCODE_DOWN:
-  case KEYCODE_S: {
-    if(!keySetLocal.backwardHeld) {
-      Network.keyDown(2);
-      keySetLocal.backwardHeld = true;
-    }
-    break; }
-
-  case KEYCODE_RIGHT:
-  case KEYCODE_D: {
-    if(!keySetLocal.rightHeld) {
-      Network.keyDown(3);
-      keySetLocal.rightHeld = true;
-    }
-    break; }
-  }
-
-  return false;
-}
-
-function handleKeyUpNetwork(e) {
-  // if(!e){ var e = window.event; }
-  switch(e.keyCode) {
-  case KEYCODE_UP:
-  case KEYCODE_W: {
-    if(keySetLocal.forwardHeld) {
-      Network.keyUp(0);
-      keySetLocal.forwardHeld = false;
-    }
-    break; }
-
-  case KEYCODE_LEFT:
-  case KEYCODE_A: {
-    if(keySetLocal.leftHeld) {
-      Network.keyUp(1);
-      keySetLocal.leftHeld = false;
-    }
-    break; }
-
-  case KEYCODE_DOWN:
-  case KEYCODE_S: {
-    if(keySetLocal.backwardHeld) {
-      Network.keyUp(2);
-      keySetLocal.backwardHeld = false;
-    }
-    break; }
-
-  case KEYCODE_RIGHT:
-  case KEYCODE_D: {
-    if(keySetLocal.rightHeld) {
-      Network.keyUp(3);
-      keySetLocal.rightHeld = false;
-    }
-    break; }
-  }
-
-  return false;
-}
-
-function tickControls() {
-  if(Game.useNetwork) {
-    if(keySetLocal.leftHeld)     { Game.localPlayer.turnCounterClockwise(); }
-    if(keySetLocal.rightHeld)    { Game.localPlayer.turnClockwise(); }
-    if(keySetLocal.forwardHeld)  { Game.localPlayer.accelerate(); }
-    if(keySetLocal.backwardHeld) { Game.localPlayer.decelerate(); }
-
-    if(keySetRemote.leftHeld)     { Game.remotePlayer.turnCounterClockwise(); }
-    if(keySetRemote.rightHeld)    { Game.remotePlayer.turnClockwise(); }
-    if(keySetRemote.forwardHeld)  { Game.remotePlayer.accelerate(); }
-    if(keySetRemote.backwardHeld) { Game.remotePlayer.decelerate(); }
-
-  } else {
-
-    if(keySetB.leftHeld)     { Game.player1.turnCounterClockwise(); }
-    if(keySetB.rightHeld)    { Game.player1.turnClockwise(); }
-    if(keySetB.forwardHeld)  { Game.player1.accelerate(); }
-    if(keySetB.backwardHeld) { Game.player1.decelerate(); }
-
-    if(keySetA.leftHeld)     { Game.player2.turnCounterClockwise(); }
-    if(keySetA.rightHeld)    { Game.player2.turnClockwise(); }
-    if(keySetA.forwardHeld)  { Game.player2.accelerate(); }
-    if(keySetA.backwardHeld) { Game.player2.decelerate(); }
-  }
-}

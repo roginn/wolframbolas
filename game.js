@@ -78,7 +78,7 @@ var Game = {
       return;
     }
 
-    tickControls();
+    KeyControls.tickControls();
 
     if(Physics.enableGravity) {
       Physics.fatalAttraction();
@@ -96,7 +96,7 @@ var Game = {
 
   handleTick: function() {
     // handle key presses
-    tickControls();
+    KeyControls.tickControls();
 
     if(Physics.enableGravity) {
       Physics.fatalAttraction();
@@ -127,7 +127,7 @@ var Game = {
     Scenario.create();
 
     Game.debug('Controls setup');
-    Game.setupControls();
+    KeyControls.setup();
 
     Game.debug('Initializing framework');
     setTimeout(Framework.init, 2000);
@@ -174,16 +174,6 @@ var Game = {
     Game.player1.loadState(player1State);
     Game.player2.loadState(player2State);
     Game.ball.loadState(ballState);
-  },
-
-  setupControls: function() {
-    if(Game.useNetwork) {
-      document.onkeydown = handleKeyDownNetwork;
-      document.onkeyup = handleKeyUpNetwork;
-    } else {
-      document.onkeydown = handleKeyDown;
-      document.onkeyup = handleKeyUp;
-    }
   }
 };
 

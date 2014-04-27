@@ -33,23 +33,23 @@ var Network = {
       var c = data.controls[i];
       if(c.action == 'u') {
         switch(c.key) {
-        case 0: keySetRemote.forwardHeld  = false; break;
-        case 1: keySetRemote.leftHeld     = false; break;
-        case 2: keySetRemote.backwardHeld = false; break;
-        case 3: keySetRemote.rightHeld    = false; break;
+        case 0: KeyControls.keySetRemote.forwardHeld  = false; break;
+        case 1: KeyControls.keySetRemote.leftHeld     = false; break;
+        case 2: KeyControls.keySetRemote.backwardHeld = false; break;
+        case 3: KeyControls.keySetRemote.rightHeld    = false; break;
         }
       } else {
         switch(c.key) {
-        case 0: keySetRemote.forwardHeld  = true; break;
-        case 1: keySetRemote.leftHeld     = true; break;
-        case 2: keySetRemote.backwardHeld = true; break;
-        case 3: keySetRemote.rightHeld    = true; break;
+        case 0: KeyControls.keySetRemote.forwardHeld  = true; break;
+        case 1: KeyControls.keySetRemote.leftHeld     = true; break;
+        case 2: KeyControls.keySetRemote.backwardHeld = true; break;
+        case 3: KeyControls.keySetRemote.rightHeld    = true; break;
         }
       }
     }
 
     Game.remoteTurn = data.turn;
-    handleTickAfterExchange();
+    Game.handleTickAfterExchange();
   },
 
   host: function() {
