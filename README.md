@@ -13,8 +13,8 @@ Issues
 ------
 
 - Bug da colisão: um objeto ainda pode entrar dentro de outro;
-- Faltam nomes que façam sentido (I'm looking at you, "js.js");
-- Refatorar js.js;
+- Funções de key_controls.js ainda estão em escopo global;
+- Network tem espaço para melhorias de desempenho;
 - HTML bem cagado.
 
 Nice to have
