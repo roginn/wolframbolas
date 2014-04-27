@@ -174,13 +174,16 @@ var Physics = {
       for(var j = i + 1; j < objLength; ++j) {
         var m2 = Game.movableElements[j],
         vDist = new Vector(m2.x - m1.x, m2.y - m1.y),
+
+        // gravity-like force (~ k/(x^2))
         // force = alpha * m1.mass * m2.mass / vDist.dotProduct(vDist);
+
+        // spring-like force (~ kx)
         force = alpha * (vDist.getMagnitude() - m1.radius - m2.radius) / m2.mass;
 
         if(m1.group != m2.group) continue;
         var order1 = Game.flavors[m1.group][m1.id];
         var order2 = Game.flavors[m2.group][m2.id];
-        // console.log(order1 + ' ' + order2);
         if(Math.abs(order1 - order2) != 1) continue;
 
         var f1 = vDist.getNormalized().getScaled(force);
@@ -195,7 +198,15 @@ var Physics = {
   },
 
   tickPositions: function() {
+    if(Physics.enableGravity) {
+      Physics.fatalAttraction();
+    }
+
+    Physics.detectCollisions();
+
     for(var i in Game.movableElements) {
+      if(!Game.movableElements.hasOwnProperty(i)) continue;
+
       var e = Game.movableElements[i];
       e.tickPosition();
     }

@@ -78,18 +78,13 @@ var Game = {
       return;
     }
 
+    // handle key presses
     KeyControls.tickControls();
-
-    if(Physics.enableGravity) {
-      Physics.fatalAttraction();
-    }
-
-    Physics.detectCollisions();
 
     // handle objects movement
     Physics.tickPositions();
-    Graphics.drawScore(Game.score.p1, Game.score.p2);
 
+    Graphics.drawScore(Game.score.p1, Game.score.p2);
     Graphics.update();
     Framework.resumeTick();
   },
@@ -98,23 +93,10 @@ var Game = {
     // handle key presses
     KeyControls.tickControls();
 
-    if(Physics.enableGravity) {
-      Physics.fatalAttraction();
-    }
-
-    Physics.detectCollisions();
-
     // handle objects movement
     Physics.tickPositions();
+
     Graphics.drawScore(Game.score.p1, Game.score.p2);
-
-
-    // debug text
-    // Physics.calculateEnergy();
-    // var debugText = "Energy: " + Game.energy.toFixed(2);
-    // debugText += "\n\nMax speed: " + Game.maxRecordedSpeed.toFixed(2);
-    // Graphics.drawDebugText(debugText);
-
     Graphics.update();
   },
 
