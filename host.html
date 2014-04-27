@@ -5,19 +5,20 @@
 <div style='text-align:center'>
   <canvas id='canvas' width='1200' height='600'></canvas>
 </div>
-<!-- <script src="http://code.createjs.com/easeljs-0.7.1.min.js"></script> -->
-<script src="easeljs-0.7.1.min.js"></script>
-<script src="http://cdn.peerjs.com/0.3/peer.min.js"></script>
+<script src="vendor/easeljs-0.7.1.min.js"></script>
+<script src="vendor/peerjs-0.3.min.js"></script>
 <script src="key_controls.js"></script>
 <script src="framework.js"></script>
 <script src="graphics.js"></script>
-<script src="vector.js"></script>
-<script src="ball.js"></script>
-<script src="wall.js"></script>
-<script src="player.js"></script>
-<script src="network.js"></script>
+<script src="util/vector.js"></script>
+<script src="models/ball.js"></script>
+<script src="models/wall.js"></script>
+<script src="models/player.js"></script>
+<script src="network/network.js"></script>
+<script src="scenario/field1.js"></script>
+<script src="scenario/scenario.js"></script>
 <script src="game.js"></script>
-<script src="js.js"></script>
+<script src="physics/physics.js"></script>
 <script>
   Network.init();
   setTimeout(function(){
